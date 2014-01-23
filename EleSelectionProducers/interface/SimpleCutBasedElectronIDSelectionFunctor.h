@@ -492,9 +492,9 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<reco::GsfElectr
     }
 
     // get particle flow isolation
-    double iso_ch = (*chIsoValsHandle_)[electronRef];
-    double iso_em = (*emIsoValsHandle_)[electronRef];
-    double iso_nh = (*nhIsoValsHandle_)[electronRef];
+    double iso_ch = electron.pfIsolationVariables().sumChargedHadronPt; //(*chIsoValsHandle_)[electronRef];
+    double iso_em = electron.pflowIsolationVariables().sumPhotonEt; //(*emIsoValsHandle_)[electronRef];
+    double iso_nh = electron.pflowIsolationVariables().sumNeutralHadronEt; //(*nhIsoValsHandle_)[electronRef];
 
     // apply to neutrals
     double rhoPrime = std::max(*rhoHandle_, 0.0);
