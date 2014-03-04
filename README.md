@@ -26,10 +26,10 @@ Download instructions.
 `cd Calibration/ZFitter && make && cd -`
 
 If you are using a tcsh shell:
-`cd Calibration && source initCmsEnv.csh`
+`cd Calibration && source ALCARAW_RECO/initCmsEnv.csh`
 
 If you are using a bash shell:
-`cd Calibration && source initCmsEnv.sh`
+`cd Calibration && source ALCARAW_RECO/initCmsEnv.sh`
 
 ======
 Code documentation:
