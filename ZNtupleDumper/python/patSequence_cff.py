@@ -11,10 +11,10 @@ from Calibration.ZNtupleDumper.elePat_cfi import *
 #print process.patElectrons.reducedBarrelRecHitCollection
     
 #------------------------------ new energies
-from Calibration.EleNewEnergiesProducer.elenewenergiesproducer_cfi import *
-eleNewEnergiesProducer.regrPhoFile='src/Calibration/EleNewEnergiesProducer/data/gbrv3ph_52x.root'
-eleNewEnergiesProducer.regrEleFile='src/Calibration/EleNewEnergiesProducer/data/gbrv3ele_52x.root'
-eleNewEnergiesProducer.regrEleFile_fra='src/Calibration/EleNewEnergiesProducer/data/eleEnergyRegWeights_V1.root'
+from Calibration.ZNtupleDumper.elenewenergiesproducer_cfi import *
+eleNewEnergiesProducer.regrPhoFile='src/Calibration/ZNtupleDumper/data/gbrv3ph_52x.root'
+eleNewEnergiesProducer.regrEleFile='src/Calibration/ZNtupleDumper/data/gbrv3ele_52x.root'
+eleNewEnergiesProducer.regrEleFile_fra='src/Calibration/ZNtupleDumper/data/eleEnergyRegWeights_V1.root'
 eleNewEnergiesProducer.ptSplit=cms.bool(False)
 
 from EgammaAnalysis.ElectronTools.electronRegressionEnergyProducer_cfi import *

@@ -23,5 +23,8 @@
 <use   name="PhysicsTools/SelectorUtils"/>
 <use   name="root"/>
 <use   name="rootcore"/>
+<use   name="roofit"/>
+<use   name="HiggsAnalysis/GBRLikelihoodEGTools"/>
+<Flags CppDefines="REGRESSION=3"/>
 #<Flags CppDefines="CMSSW42X=1"/>
 <flags EDM_PLUGIN="1"/>

@@ -146,7 +146,7 @@ case $CMSSW_VERSION in
 	git clone https://github.com/bendavid/GBRLikelihood.git 
 	git clone https://github.com/bendavid/GBRLikelihoodEGTools.git
 	cd -
-	mv GBRLikelihoodEGTools/data/*.root $myDir/EleNewEnergiesProducer/data/
+	mv GBRLikelihoodEGTools/data/*.root $myDir/ZNtupleDumper/data/
 
 	echo "[STATUS] applying patch for CMSSW_5_X"
 	sed 's|,eleIt->ecalEnergyError()\*(nearestSC.*);|);|' $myDir/ALCARAW_RECO/src/ElectronRecalibSuperClusterAssociatorSH.cc_topatch > $myDir/ALCARAW_RECO/src/ElectronRecalibSuperClusterAssociatorSH.cc
@@ -160,7 +160,7 @@ case $CMSSW_VERSION in
     fi
     patch  -p0 < $myDir/ALCARAW_RECO/test/class_def.xml.patch >> setup.log || exit 1
 
-	cp /afs/cern.ch/user/b/bendavid/cmspublic/regweights52xV3/*.root $myDir/EleNewEnergiesProducer/data/ >> setup.log || exit 1
+	cp /afs/cern.ch/user/b/bendavid/cmspublic/regweights52xV3/*.root $myDir/ZNtupleDumper/data/ >> setup.log || exit 1
 
 
 	;;
@@ -215,7 +215,7 @@ case $CMSSW_VERSION in
 	git clone https://github.com/bendavid/GBRLikelihood.git 
 	git clone https://github.com/bendavid/GBRLikelihoodEGTools.git
 	cd -
-	mv GBRLikelihoodEGTools/data/*.root $myDir/EleNewEnergiesProducer/data/
+	mv GBRLikelihoodEGTools/data/*.root $myDir/ZNtupleDumper/data/
 
 
 	echo "[STATUS] applying patch for CMSSW_5_X"
@@ -230,7 +230,7 @@ case $CMSSW_VERSION in
     fi
 #    patch  -p0 < $myDir/ALCARAW_RECO/test/class_def.xml.patch >> setup.log || exit 1
 
-	cp /afs/cern.ch/user/b/bendavid/cmspublic/regweights52xV3/*.root $myDir/EleNewEnergiesProducer/data/ >> setup.log || exit 1
+	cp /afs/cern.ch/user/b/bendavid/cmspublic/regweights52xV3/*.root $myDir/ZNtupleDumper/data/ >> setup.log || exit 1
 
 
 
