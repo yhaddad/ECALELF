@@ -140,7 +140,7 @@ PassingTightId = selectedElectrons.clone(
     )
 
 #------------------------------ electronID producer
-from Calibration.EleSelectionProducers.eleselectionproducers_cfi import *
+#from Calibration.EleSelectionProducers.eleselectionproducers_cfi import *
 # process.EleSelectionProducers
 
 SCselector = cms.EDFilter("SuperClusterSelector",
@@ -154,10 +154,10 @@ eleSC = cms.EDProducer('ConcreteEcalCandidateProducer',
                   particleType = cms.string('gamma')
                   )
 
-selectedCands = cms.EDFilter("AssociatedVariableMaxCutCandRefSelector",
-                             src = cms.InputTag("eleSelectionProducers:loose"),
-                             max = cms.double("0.5")
-                             )
+# selectedCands = cms.EDFilter("AssociatedVariableMaxCutCandRefSelector",
+#                              src = cms.InputTag("eleSelectionProducers:loose"),
+#                              max = cms.double("0.5")
+#                              )
 
 eleSelSeq = cms.Sequence(
     PassingVeryLooseId + PassingMediumId + PassingTightId + #(eleSelectionProducers * selectedCands) +
