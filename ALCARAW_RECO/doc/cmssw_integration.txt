@@ -18,7 +18,7 @@ git branch --set-upstream-to my-cmssw/CMSSW_7_1_X
 git pull
 git pull  official-cmssw CMSSW_7_1_X 
 git push
-
+git remote add -f -t devel-700X ecalelf git@github.com:shervin86/ecalelf.git
 \endcode
 
 
