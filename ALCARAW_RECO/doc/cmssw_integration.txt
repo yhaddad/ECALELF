@@ -1,0 +1,25 @@
+/**
+ \page cmsswIntegration Integration and update of ECALELF in CMSSW
+
+ - create a new release
+   
+ - 
+\code 
+scram project CMSSW CMSSW_7_1_X_2014-03-04-0200 
+cd CMSSW_7_1_X_2014-03-04-0200/src
+cmsenv
+git-cms-addpkg Calibration
+cd Calibration
+git remote remove my-cmssw
+git remote add -t CMSSW_7_1_X my-cmssw git@github.com:shervin86/cmssw.git
+git fetch my-cmssw
+git checkout CMSSW_7_1_X
+git branch --set-upstream-to my-cmssw/CMSSW_7_1_X
+git pull
+git pull  official-cmssw CMSSW_7_1_X 
+git push
+
+\endcode
+
+
+*/
