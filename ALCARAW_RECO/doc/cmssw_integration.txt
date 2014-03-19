@@ -5,25 +5,26 @@
    
  - 
 \code 
-scram project CMSSW CMSSW_7_1_X_2014-03-04-0200 
-cd CMSSW_7_1_X_2014-03-04-0200/src
+scram project CMSSW  CMSSW_7_1_X_2014-03-18-0200
+cd CMSSW_7_1_X_2014-03-18-0200/src/
 cmsenv
-git-cms-addpkg Calibration
-cd Calibration
+#git-cms-addpkg Calibration
 git remote remove my-cmssw
 git remote add -t CMSSW_7_1_X my-cmssw git@github.com:shervin86/cmssw.git
 git fetch my-cmssw
 git checkout CMSSW_7_1_X
+git pull
 git branch --set-upstream-to my-cmssw/CMSSW_7_1_X
 git pull
 git pull  official-cmssw CMSSW_7_1_X 
 git push
 git remote add -f -t devel-700X ecalelf git@github.com:ECALELFS/ecalelf.git
 git branch ecalelf-devel ecalelf/devel-700X
-git subtree add --prefix=Ecalelf/ ecalelf fd7e5a26faebea4e118f7de5fade4aa0df326e00
-
-
-
+#git subtree add --prefix=Ecalelf/ ecalelf fd7e5a26faebea4e118f7de5fade4aa0df326e00
+git-cms-addpkg Ecalelf
+#git subtree split --prefix=Ecalelf --annotate='(split) ' --rejoin --branch gitweb-latest2
+git subtree pull --prefix=Ecalelf ecalelf devel-700X
+git push
 \endcode
 
 */
