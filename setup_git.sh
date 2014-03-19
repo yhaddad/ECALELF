@@ -240,6 +240,7 @@ esac
 
 # compile
 scram b -j8
+scram b
 
 # for file in `find -name '*.url'`; 
 #   do 
