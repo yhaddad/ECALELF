@@ -9,7 +9,7 @@ checkVERSION(){
 	CMSSW_5_3_14_patch2)
 	    echo "[INFO] Installing for $CMSSW_VERSION (2012 8TeV)"
 	    ;;
-	CMSSW_7_0_0_*)
+	CMSSW_7_0_*)
 	    echo "[INFO] Installing for $CMSSW_VERSION (2012 8TeV)"
 	    ;;
 	*)
