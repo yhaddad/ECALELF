@@ -6,7 +6,7 @@ import copy
 
 from PhysicsTools.PatAlgos.tools.helpers import cloneProcessingSnippet
 
-    
+myEleCollection =  cms.InputTag("gedGsfElectrons")
 #sys.path(".")
 
 ############################################################
@@ -331,7 +331,7 @@ process.load('Calibration.ALCARAW_RECO.WZElectronSkims_cff')
 #process.filterSeq *= process.ZeeFilterSeq
 #process.filterSeq *= process.WenuFilterSeq
 process.MinEleNumberFilter = cms.EDFilter("CandViewCountFilter",
-                                          src = cms.InputTag("gedGsfElectrons"),
+                                          src = myEleCollection,
                                           minNumber = cms.uint32(1)
                                           )
 if(options.skim=="" or options.skim=="none" or options.skim=="no"):
@@ -705,3 +705,19 @@ process.sandboxRerecoSeq*=process.elPFIsoValueNeutral03PFIdRecalib
 ############################
 processDumpFile = open('processDump.py', 'w')
 print >> processDumpFile, process.dumpPython()
+
+##########################################################
+## Set correct electron definition for required methods ##
+##########################################################
+process.eleRegressionEnergy.inputElectronsTag = myEleCollection
+process.patElectrons.electronSource = myEleCollection
+process.eleSelectionProducers.electronCollection = myEleCollection
+process.PassingHLT.InputProducer = myEleCollection
+process.selectedElectrons.src = myEleCollection
+process.eleNewEnergiesProducer.electronCollection = myEleCollection
+process.alCaIsolatedElectrons.electronLabel = myEleCollection 
+process.alcaElectronTracksReducer.electronLabel = myEleCollection
+process.elPFIsoDepositGammaGsf.src = myEleCollection
+process.elPFIsoValueCharged03PFIdRecalib.oldreferenceCollection = myEleCollection
+process.elPFIsoValueGamma03PFIdRecalib.oldreferenceCollection = myEleCollection
+process.elPFIsoValueNeutral03PFIdRecalib.oldreferenceCollection = myEleCollection
