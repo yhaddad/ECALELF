@@ -1,0 +1,2 @@
+git remote add ecalelf git@github.com:ECALELFS/ECALELF.git
+git merge -s recursive -Xsubtree=Calibration --no-commit ecalelf/CMSSW_73X-devel
