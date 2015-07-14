@@ -50,7 +50,6 @@ usage(){
     echo "    --njobs nJobs : number of jobs, an integer (only crab2)"
     echo "    --publish : Publish output dataset on DAS"
     echo "----------"
-    echo "    --tagFile extract GlobalTag from tagFile"
     echo "    --tutorial: tutorial mode, produces only one sample in you user area"
     echo "    --develRelease: CRAB do not check if the CMSSW version is in production (only if you are sure what you are doing)"
     echo "----------"
@@ -61,7 +60,7 @@ usage(){
 
 #------------------------------ parsing
 # options may be followed by one colon to indicate they have a required argument
-if ! options=$(getopt -u -o hd:n:s:r:t: -l help,datasetpath:,datasetname:,skim:,runrange:,store:,remote_dir:,dbs_url:,scheduler:,isMC,type:,submit,white_list:,black_list:,createOnly,submitOnly,check,json:,jobname:,doTree,doExtraCalibTree,doEleIDTree,doPdfSystTree,noStandardTree,njobs:,publish,fromRAW,tutorial,tag:,tagFile:,develRelease -- "$@")
+if ! options=$(getopt -u -o hd:n:s:r:t: -l help,datasetpath:,datasetname:,skim:,runrange:,store:,remote_dir:,dbs_url:,scheduler:,isMC,type:,submit,white_list:,black_list:,createOnly,submitOnly,check,json:,jobname:,doTree,doExtraCalibTree,doEleIDTree,doPdfSystTree,noStandardTree,njobs:,publish,fromRAW,tutorial,tag:,develRelease -- "$@")
 then
     # something went wrong, getopt will put out an error message for us
     exit 1
@@ -81,7 +80,6 @@ do
 	--store) STORAGE_ELEMENT=$2; shift;;
 	--remote_dir) USER_REMOTE_DIR_BASE=$2; shift;;
 	--dbs_url)    DBS_URL=$2; shift;;
-	--tagFile)    DBS_URL=$2; shift;;
 	--scheduler) SCHEDULER=$2; shift;;
 	--isMC) echo "[OPTION] Input dataset is MC" ; ISMC="yes" ;;
 	--type) TYPE=$2 ; shift;;
@@ -212,7 +210,7 @@ case $DATASETPATH in
 	;;
     *USER)
 	if [ -z ${DBS_URL} ];then
-	let DBS_URL=phys03
+	    let DBS_URL=phys03
 	fi
 	;;
 esac
