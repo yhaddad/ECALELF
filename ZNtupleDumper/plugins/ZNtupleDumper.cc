@@ -1001,6 +1001,7 @@ void ZNtupleDumper::endJob()
   if(tree->GetEntries()>0){
     tree->BuildIndex("runNumber","eventNumber");
     if(doEleIDTree)       eleIDTree->BuildIndex("runNumber","eventNumber");
+    if(doExtraCalibTree) extraCalibTree->BuildIndex("runNumber","eventNumber");
   }
   // save the tree into the file
   tree_file->cd();
@@ -1008,13 +1009,11 @@ void ZNtupleDumper::endJob()
   tree_file->Close();
   
   if(doExtraCalibTree){
-    extraCalibTree->BuildIndex("runNumber","eventNumber");
     extraCalibTreeFile->cd();
     extraCalibTree->Write();  
     extraCalibTreeFile->Close();
   }
   if(doEleIDTree){
-    eleIDTree->BuildIndex("runNumber","eventNumber");
     eleIDTreeFile->cd();
     eleIDTree->Write();
     eleIDTreeFile->Close();
