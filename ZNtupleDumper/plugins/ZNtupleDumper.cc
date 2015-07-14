@@ -756,6 +756,7 @@ void ZNtupleDumper::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	  double t2=TMath::Exp(-eleIter2->eta());
 	  double t2q = t2*t2;
 
+	  if(eleIter1->parentSuperCluster().isNonnull() && eleIter2->parentSuperCluster().isNonnull()) continue;
 	  double angle=1-
 	    ( (1-t1q)*(1-t2q)+4*t1*t2*cos(eleIter1->phi()-eleIter2->phi()))/(
 									(1+t1q)*(1+t2q)
@@ -1357,7 +1358,10 @@ void ZNtupleDumper::TreeSetSingleElectronVar(const pat::Electron& electron1, int
   }
 
   energySCEle[index]  = electron1.superCluster()->energy();
-  energySCEle_must[index]  = electron1.parentSuperCluster()->energy();
+  if(electron1.parentSuperCluster().isNonnull())
+    energySCEle_must[index] = electron1.parentSuperCluster()->energy();
+  else   energySCEle_must[index]=-99;
+
   rawEnergySCEle[index]  = electron1.superCluster()->rawEnergy();
   esEnergySCEle[index] = electron1.superCluster()->preshowerEnergy();
 #ifndef CMSSW42X
@@ -1645,7 +1649,10 @@ void ZNtupleDumper::TreeSetSinglePhotonVar(const pat::Photon& photon, int index)
   }
 
   energySCEle[index]  = photon.superCluster()->energy();
-  energySCEle_must[index]  = photon.parentSuperCluster()->energy();
+  if(photon.parentSuperCluster().isNonnull())
+    energySCEle_must[index] = photon.parentSuperCluster()->energy();
+  else energySCEle_must[index = -99.;
+
   rawEnergySCEle[index]  = photon.superCluster()->rawEnergy();
   esEnergySCEle[index] = photon.superCluster()->preshowerEnergy();
   //  energySCEle_corr[index] = photon.scEcalEnergy(); //but, I don't think this is the correct energy..
