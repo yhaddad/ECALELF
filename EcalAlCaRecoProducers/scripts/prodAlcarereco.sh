@@ -17,6 +17,7 @@ CREATE=y
 SUBMIT=y
 DOTREE=1
 TYPE=ALCARERECO
+OUTFILES="ntuple.root"
 JOBNAME="-SAMPLE-RUNRANGE-JSON"
 CRABVERSION=2
 crab3File=tmp/alcarereco_cfg.py
@@ -108,6 +109,8 @@ do
     shift
 done
 
+echo "DEBUG ALCARERECO DOEXTRACALIBTREE $DOEXTRACALIBTREE"
+echo "DEBUG DOTREEE $DOTREE"
 
 #------------------------------ checking
 if [ -z "$DATASETPATH" ];then 
@@ -306,7 +309,7 @@ pycfg_params= type=ALCARERECO tagFile=${TAGFILE} doTree=${DOTREE} doTreeOnly=0 j
 runselection=${RUNRANGE}
 split_by_run=0
 
-output_file=ntuple.root
+output_file=${OUTFILES}
 get_edm_output=1
 check_user_remote_dir=1
 use_parent=${USEPARENT}
@@ -414,6 +417,14 @@ elif [ -n "${CREATE}" ];then
     echo "crab -c ${UI_WORKING_DIR} -submit all"
 fi
 
+if [ -n "${NTUPLECHECK}" ];then
+    echo "[INFO] using prodNtuples "
+    ./scripts/prodNtuples.sh -r ${RUNRANGE} -d ${DATASETPATH} -n ${DATASETNAME} --store ${STORAGE_ELEMENT} --remote_dir ${USER_REMOTE_DIR_BASE} --type=ALCARERECO --json=${JSONFILE} --json_name=${JSONNAME} -t ${TAGFILE} ${DOEXTRACALIBTREE} ${EXTRAOPTION}
+    exit 0
+fi
+
+OUTFILES=`echo ${OUTFILES} | sed 's|,| |'`
+
 if [ -n "${CHECK}" ];then
 	case ${CRABVERSION} in
 		2)
@@ -422,7 +433,12 @@ if [ -n "${CHECK}" ];then
 	#echo $dir >> tmp/$TAG.log 
 	echo "[STATUS] Unfinished ${UI_WORKING_DIR}"
     else
-	mergeOutput.sh -u ${UI_WORKING_DIR} -g ntuple --merged_remote_dir=${NTUPLE_REMOTE_DIR}
+	for file in $OUTFILES
+	  do
+	  file=`basename $file .root`
+		echo "[INF0] Merging $file files"
+	mergeOutput.sh -u ${UI_WORKING_DIR} -g $file --merged_remote_dir=${NTUPLE_REMOTE_DIR}
+	done
     fi
 		;;
 		3)

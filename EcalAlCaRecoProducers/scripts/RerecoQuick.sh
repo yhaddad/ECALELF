@@ -12,6 +12,7 @@ SUBMIT=y  #not used
 #RERECO=y  #not used
 fileList=alcaraw_datasets.dat
 crabVersion=2
+DOEXTRACALIBTREE=" "
 
 
 usage(){
@@ -93,6 +94,8 @@ done
 
 #------------------------------ checking
 
+echo "DEBUG QUIRRERECO DOEXTRACALIBTREE ++$DOEXTRACALIBTREE++"
+
 if [ ! -r "$TAGFILE" ];then
     echo "[ERROR] TAGFILE not found or not readable" >> /dev/stderr
     exit 1
@@ -155,6 +158,7 @@ for dataset in $datasets
   ./scripts/prodAlcarereco.sh -t ${TAGFILE} \
       --scheduler $SCHEDULER --crabVersion=${crabVersion} --json_name=${JSONFILE} --json_name=${JSONNAME} \
       ${DOEXTRACALIBTREE} ${EXTRAOPTION} ${EXTRAEXTRAOPTION} ${TUTORIAL} $dataset 
+
 
 done
 
