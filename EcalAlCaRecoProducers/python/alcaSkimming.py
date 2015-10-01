@@ -56,7 +56,12 @@ options.register('pdfSyst',
                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                  VarParsing.VarParsing.varType.int,          # string, int, or float
                  "bool: pdfSyst=1 true, pdfSyst=0 false")
-                 
+options.register('bunchSpacing',
+                 25,
+                 VarParsing.VarParsing.multiplicity.singleton,
+                 VarParsing.VarParsing.varType.int,
+                 "50=50ns, 25=25ns,0=weights")
+
 ### setup any defaults you want
 options.output="alcaSkimALCARAW.root"
 options.secondaryOutput="ntuple.root"
@@ -151,6 +156,8 @@ process.load('Calibration.EcalAlCaRecoProducers.ALCARECOEcalUncalIsolElectron_Ou
 
 process.load('Calibration.EcalAlCaRecoProducers.ALCARECOEcalRecalIsolElectron_cff')
 process.load('Calibration.EcalAlCaRecoProducers.ALCARECOEcalRecalIsolElectron_Output_cff')
+process.load('RecoLocalCalo.EcalRecProducers.ecalLocalCustom')
+
 # this module provides:
 # process.seqALCARECOEcalRecalElectron 
 
@@ -878,6 +885,11 @@ process.patElectrons.reducedEndcapRecHitCollection = process.eleNewEnergiesProdu
 process.zNtupleDumper.recHitCollectionEB = process.eleNewEnergiesProducer.recHitCollectionEB
 process.zNtupleDumper.recHitCollectionEE = process.eleNewEnergiesProducer.recHitCollectionEE
 
+
+if(options.bunchSpacing==25):
+    configureEcalLocal25ns(process)
+elif(options.bunchSpacing=50):
+    configureEcalLocal50ns(process)
 
 ############################
 ## Dump the output Python ##
