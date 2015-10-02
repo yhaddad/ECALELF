@@ -213,6 +213,14 @@ case $SCHEDULER in
 		;;
 esac
 
+case $DATASETNAME in
+	*-50nsReco) BUNCHSPACING=50;;
+	*-25nsReco) BUNCHSPACING=25;;
+	*)
+		echo "Other bunch spacing not implemented yet in alcaSkimming" >> /dev/stderr
+		exit 1
+		;;
+esac
 
 
 ALCARAW_REMOTE_DIR=$ALCARAW_REMOTE_DIR_BASE/${ENERGY}/${DATASETNAME}/${RUNRANGE}
@@ -308,7 +316,7 @@ queue = cmscaf1nd
 allow_NonProductionCMSSW = 1
 
 pset=python/alcaSkimming.py
-pycfg_params= type=ALCARERECO tagFile=${TAGFILE} doTree=${DOTREE} doTreeOnly=0 jsonFile=${JSONFILE}  isCrab=1
+pycfg_params= type=ALCARERECO tagFile=${TAGFILE} doTree=${DOTREE} doTreeOnly=0 jsonFile=${JSONFILE}  isCrab=1 bunchSpacing=${BUNCHSPACING}
 
 runselection=${RUNRANGE}
 split_by_run=0
@@ -369,7 +377,7 @@ config.General.workArea = 'crab_projects'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles= ['${OUTFILES}']
 config.JobType.psetName = 'python/alcaSkimming.py'
-config.JobType.pyCfgParams = ['tagFile=${TAGFILE}', 'skim=${SKIM}', 'type=$TYPE','doTree=${DOTREE}', 'jsonFile=${JSONFILE}', 'isCrab=1']
+config.JobType.pyCfgParams = ['tagFile=${TAGFILE}', 'skim=${SKIM}', 'type=$TYPE','doTree=${DOTREE}', 'jsonFile=${JSONFILE}', 'isCrab=1', 'bunchSpacing=${BUNCHSPACING}']
 config.JobType.allowUndistributedCMSSW = True
 config.Data.inputDataset = '${DATASETPATH}'
 config.Data.inputDBS = '${DBS_URL}'
