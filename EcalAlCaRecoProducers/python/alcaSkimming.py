@@ -156,7 +156,7 @@ process.load('Calibration.EcalAlCaRecoProducers.ALCARECOEcalUncalIsolElectron_Ou
 
 process.load('Calibration.EcalAlCaRecoProducers.ALCARECOEcalRecalIsolElectron_cff')
 process.load('Calibration.EcalAlCaRecoProducers.ALCARECOEcalRecalIsolElectron_Output_cff')
-process.load('RecoLocalCalo.EcalRecProducers.ecalLocalCustom')
+from RecoLocalCalo.EcalRecProducers.ecalLocalCustom import *
 
 # this module provides:
 # process.seqALCARECOEcalRecalElectron 
@@ -865,7 +865,7 @@ process.alcaElectronTracksReducer.electronLabel = myEleCollection
 process.eleNewEnergiesProducer.recHitCollectionEB = cms.InputTag("alCaIsolatedElectrons", "alcaBarrelHits")
 process.eleNewEnergiesProducer.recHitCollectionEE = cms.InputTag("alCaIsolatedElectrons", "alcaEndcapHits")
 
-if(options.type=="ALCARERECO"):        
+if(options.type=="ALCARERECO"):
     recalibElectronSrc = cms.InputTag("electronRecalibSCAssociator") #now done by EcalRecal(process)
     process = EcalRecal(process)
     process.eleSelectionProducers.electronCollection   = recalibElectronSrc
@@ -879,17 +879,24 @@ if(options.type=="ALCARERECO"):
     process.MinEleNumberFilter.src = recalibElectronSrc
     process.zNtupleDumper.WZSkimResultsCollection = cms.InputTag('TriggerResults::RECO') ## how and why and where is it used?
 
-    
+    if(options.bunchSpacing==25):
+        print "bunchSpacing", options.bunchSpacing
+        #        configureEcalLocal25ns(process)
+        process.ecalMultiFitUncalibRecHit.algoPSet.activeBXs = cms.vint32(-5,-4,-3,-2,-1,0,1,2,3,4)
+        process.ecalMultiFitUncalibRecHit.algoPSet.useLumiInfoRunHeader = cms.bool(False)
+    elif(options.bunchSpacing==50):
+        #        configureEcalLocal50ns(process)
+        process.ecalMultiFitUncalibRecHit.algoPSet.activeBXs = cms.vint32(-4,-2,0,2,4)
+        process.ecalMultiFitUncalibRecHit.algoPSet.useLumiInfoRunHeader = cms.bool(False)
+    else:
+        print "[ERROR] only bunchSpacing of 50 and 25 are implemented"
+        exit(1)
+        
 process.patElectrons.reducedBarrelRecHitCollection = process.eleNewEnergiesProducer.recHitCollectionEB
 process.patElectrons.reducedEndcapRecHitCollection = process.eleNewEnergiesProducer.recHitCollectionEE
 process.zNtupleDumper.recHitCollectionEB = process.eleNewEnergiesProducer.recHitCollectionEB
 process.zNtupleDumper.recHitCollectionEE = process.eleNewEnergiesProducer.recHitCollectionEE
 
-
-if(options.bunchSpacing==25):
-    configureEcalLocal25ns(process)
-elif(options.bunchSpacing=50):
-    configureEcalLocal50ns(process)
 
 ############################
 ## Dump the output Python ##

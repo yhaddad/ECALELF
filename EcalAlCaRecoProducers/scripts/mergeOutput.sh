@@ -49,10 +49,11 @@ elif [ ! -r "${UI_WORKING_DIR}/share/crab.cfg" ];then
     exit 1
 fi
 
-if [ -e "${UI_WORKING_DIR}/res/merged" ];then
-    echo "[REPORT] Ntuples already merged"
+if [ -e "${UI_WORKING_DIR}/res/merged_${FILENAME_BASE}" ];then
+    echo "[REPORT] Ntuples ${FILENAME_BASE} already merged"
     exit 0
 fi
+
 ### taking the output directory (also possible directly from the crab.cfg file
 
 USER_REMOTE_DIR=`grep '^user_remote_dir=' ${UI_WORKING_DIR}/share/crab.cfg |cut -d '=' -f 2` 
@@ -87,7 +88,7 @@ case ${USER_REMOTE_DIR} in
 esac
 
 echo "MERGED_REMOTE_DIR=${MERGED_REMOTE_DIR:=${USER_REMOTE_DIR}}"
-
+rm filelist/ -Rf
 if [ -n "${FILENAME_BASE}" ];then
     makefilelist.sh -g ${FILENAME_BASE} unmerged ${STORAGE_PATH}/${USER_REMOTE_DIR} || exit 1
 else
@@ -105,6 +106,8 @@ if [ "${FILENAME_BASE}" == "PUDumper" ];then
     MERGEDFILE=PUDumper-${DATASETNAME}-${RUNRANGE}.root
 elif [ "`echo ${FILENAME_BASE} | awk '(/extraID/){printf(\"1\")}'`" == "1" ]; then
     MERGEDFILE=extraID-${DATASETNAME}-${RUNRANGE}.root
+elif [ "`echo ${FILENAME_BASE} | awk '(/extraCalibTree/){printf(\"1\")}'`" == "1" ]; then
+    MERGEDFILE=extraCalibTree-${DATASETNAME}-${RUNRANGE}.root
 else
     MERGEDFILE=${DATASETNAME}-${RUNRANGE}.root
 fi

@@ -231,6 +231,7 @@ case $TYPE in
 			none) EVENTS_PER_JOB=20000;;
 		esac
 		TYPE=ALCARECO
+		subdir=prod_alcareco
 		;;
     EcalUncal | ALCARAW )
 		case $DATASETPATH in
@@ -262,11 +263,13 @@ case $TYPE in
 			none) EVENTS_PER_JOB=20000;;
 		esac
 		TYPE=ALCARAW
+		subdir=prod_alcaraw
 		;;
     EcalRecal | ALCARERECO)
 		ALCATYPE="ALCA:EcalRecalElectron"
 		CUSTOMISE="--process=RERECO --customise Calibration/EcalAlCaRecoProducers/customRereco.EcalRecal "
 		TYPE=ALCARECO
+		subdir=prod_alcareco
 		;;
     *)
 		echo "[ERROR] No TYPE defined. If you want to use ALCARECOSIM, use ALCARECO and option --isMC" >> /dev/stderr
@@ -284,7 +287,7 @@ setStoragePath $STORAGE_ELEMENT $SCHEDULER
 if [ -z "${CHECK}" ];then checkRelease ${DATASETPATH}; fi
 
 USER_REMOTE_DIR=$USER_REMOTE_DIR_BASE/${ENERGY}/${DATASETNAME}/${RUNRANGE:-allRange}
-UI_WORKING_DIR=prod_alcareco/${DATASETNAME}/${RUNRANGE}
+UI_WORKING_DIR=${subdir}/${DATASETNAME}/${RUNRANGE}
 
 if [ "$RUNRANGE" == "allRange" -o "`echo $RUNRANGE |grep -c -P '[0-9]+-[0-9]+'`" == "0" ];then
     unset RUNRANGE
