@@ -74,7 +74,7 @@ expertUsage(){
 
     
 #------------------------------ parsing
-echo $@
+
 # options may be followed by one colon to indicate they have a required argument
 if ! options=$(getopt -u -o hHd:n:s:r:t:f: -l help,expertHelp,datasetpath:,datasetname:,skim:,runrange:,store:,remote_dir:,scheduler:,isMC,isParticleGun,ntuple_remote_dir:,json:,tag:,type:,json_name:,ui_working_dir:,extraName:,doExtraCalibTree,doEleIDTree,doPdfSystTree,noStandardTree,createOnly,submitOnly,check,isPrivate,file_per_job:,develRelease -- "$@")
 then
@@ -84,6 +84,7 @@ fi
 
 
 set -- $options
+#echo $options
 
 while [ $# -gt 0 ]
 do
@@ -140,7 +141,22 @@ do
 
 	-f|--filelist) FILELIST="$FILELIST $2"; echo ${FILELIST}; shift ;;
 	-s|--skim) SKIM=$2 ; shift;;
-	-t | --tag) TAGFILE=$2; echo "[OPTION] GLOBALTAG:$TAGFILE"; TAG=`basename ${TAGFILE} .py`; shift;;
+	-t | --tag) 
+			if [ -n "${TAG}" ];then
+				if [ "`basename $2 .py`" != "${TAG}" ];then
+					echo "[ERROR] -t options called twice with different tag!" >> /dev/stderr
+					exit 1
+				fi
+			else
+				TAGFILE=$2; 
+				case $TAGFILE in
+					config/reRecoTags/*) TAG=`basename ${TAGFILE} .py` ;;
+					*) TAG=$TAGFILE; TAGFILE=config/reRecoTags/$TAG.py;;
+				esac						
+			echo "[OPTION] GLOBALTAG:$TAGFILE"; 
+			fi
+			shift 
+			;;
 	--ntuple_store) STORAGE_ELEMENT=$2; shift;;
 	--ui_working_dir) UI_WORKING_DIR=$2; shift;;
 	--scheduler) SCHEDULER=$2; shift;;
@@ -209,24 +225,11 @@ setEnergy $DATASETPATH
 
 if [ "${TYPE}" != "ALCARERECO" -a "${TYPE}" != "ALCARAW" ];then
     ORIGIN_REMOTE_DIR_BASE=`echo ${ORIGIN_REMOTE_DIR_BASE} | sed 's|alcaraw|alcareco|g'`
-elif [ "${TYPE}" != "alcarereco" ];then
-    echo ${ORIGIN_REMOTE_DIR_BASE}
+#elif [ "${TYPE}" != "alcarereco" ];then
+#    echo ${ORIGIN_REMOTE_DIR_BASE}
 #    ORIGIN_REMOTE_DIR_BASE=`echo ${ORIGIN_REMOTE_DIR_BASE} | sed 's|sandbox|alcareco|g'`
 fi
 
-if [ -z "${CHECK}" ];then
-	if [ "${TYPE}" == "ALCARERECO" ];then
-		if [ "`cat ntuple_datasets.dat | grep ${DATASETNAME}  | grep ${JSONNAME} | grep $TAG | grep -c $RUNRANGE`" != "0" ];then
-			echo "[WARNING] Ntuple for rereco $TAG already done for ${RUNRAGE} ${DATASETNAME}"
-			exit 0
-		fi
-#else
-#    if [ "`cat ntuple_datasets.dat | grep -v ALCARERECO | grep ${DATASETNAME} | grep ${JSONNAME} | grep -c $RUNRANGE`" != "0" ];then
-#	echo "[WARNING] Ntuple for $JSONNAME  already done for ${RUNRANGE} ${DATASETNAME}"
-#	exit 0
-#    fi
-	fi
-fi
 
 
 #JOBINDEX=`cat crab_projects/crab_${DATASETNAME}/crab.log | grep -oh -m1 '[0-9]\{6\}_[0-9]\{6\}'` 
@@ -254,6 +257,60 @@ case $TYPE in
 		ORIGIN_REMOTE_DIR=${USER_REMOTE_DIR}
 		;;
 esac
+
+
+
+if [ -z "$USER_REMOTE_DIR_BASE" ];then 
+    echo "[ERROR] USER_REMOTE_DIR_BASE not defined" >> /dev/stderr
+    usage >> /dev/stderr
+    exit 1
+fi
+
+UI_WORKING_DIR=$UI_WORKING_DIR/${TYPE}/${TAG}/${DATASETNAME}/${RUNRANGE}/${JSONNAME}/${EXTRANAME}
+
+USER_REMOTE_DIR=$USER_REMOTE_DIR_BASE/${ENERGY}/${TYPE}
+if [ -n "${TAG}" ];then USER_REMOTE_DIR=$USER_REMOTE_DIR/${TAG}; fi
+USER_REMOTE_DIR=$USER_REMOTE_DIR/${DATASETNAME}/${RUNRANGE}
+if [ -n "${JSONNAME}" ];then USER_REMOTE_DIR=$USER_REMOTE_DIR/${JSONNAME}; fi
+if [ -n "${EXTRANAME}" ];then USER_REMOTE_DIR=$USER_REMOTE_DIR/${EXTRANAME}; fi
+
+if [ -z "${CHECK}" ];then
+	if [ "${TYPE}" == "ALCARERECO" ];then
+		if [ "`cat ntuple_datasets.dat | grep ${DATASETNAME}  | grep ${JSONNAME} | grep $TAG | grep -c $RUNRANGE`" != "0" ];then
+			echo "[WARNING] Ntuple for rereco $TAG already done for ${RUNRAGE} ${DATASETNAME}"
+
+			for file in `eos.select ls -l $STORAGE_PATH/$USER_REMOTE_DIR/  | sed '/^d/ d' | awk '{print $9}'`
+			do 
+				echo "[FILE] $STORAGE_PATH/$USER_REMOTE_DIR/$file"
+			done
+			exit 0
+		fi
+#else
+#    if [ "`cat ntuple_datasets.dat | grep -v ALCARERECO | grep ${DATASETNAME} | grep ${JSONNAME} | grep -c $RUNRANGE`" != "0" ];then
+#	echo "[WARNING] Ntuple for $JSONNAME  already done for ${RUNRANGE} ${DATASETNAME}"
+#	exit 0
+#    fi
+	fi
+fi
+USER_REMOTE_DIR=$USER_REMOTE_DIR/unmerged
+
+
+#==============================
+
+
+
+###############################
+
+
+#------------------------------
+
+
+
+
+#${ENERGY}/
+#${DATASETNAME}/tmp-${DATASETNAME}-${RUNRANGE}
+OUTFILES=`echo $OUTFILES | sed 's|^,||'`
+
 
 case ${ORIGIN_REMOTE_DIR_BASE} in
     database)
@@ -283,59 +340,24 @@ case ${ORIGIN_REMOTE_DIR_BASE} in
 	;;
 esac
 
-
-if [ -z "$USER_REMOTE_DIR_BASE" ];then 
-    echo "[ERROR] USER_REMOTE_DIR_BASE not defined" >> /dev/stderr
-    usage >> /dev/stderr
-    exit 1
-fi
-
-
-
-
-#==============================
-
-if [ -n "$FILELIST" ]
-    then
-    
+if [ -n "$FILELIST" ]; then
     nFiles=`cat $FILELIST | wc -l`
     if [ -n "$NJOBS" ];then
 	
-	let FILE_PER_JOB=$nFiles/$NJOBS
-	if [ "`echo \"$nFiles%$NJOBS\" | bc`" != "0" ];then
-	    let FILE_PER_JOB=$FILE_PER_JOB+1
-	fi
+		let FILE_PER_JOB=$nFiles/$NJOBS
+		if [ "`echo \"$nFiles%$NJOBS\" | bc`" != "0" ];then
+			let FILE_PER_JOB=$FILE_PER_JOB+1
+		fi
     elif [ -n "$FILE_PER_JOB" ];then
-	let NJOBS=$nFiles/$FILE_PER_JOB
-	if [ "`echo \"$nFiles%$FILE_PER_NJOB\" | bc`" != "0" ];then
-	    let NJOBS=$NJOBS+1
-	fi
+		let NJOBS=$nFiles/$FILE_PER_JOB
+		if [ "`echo \"$nFiles%$FILE_PER_NJOB\" | bc`" != "0" ];then
+			let NJOBS=$NJOBS+1
+		fi
     else
 	NJOBS=$nFiles
 	FILE_PER_JOB=1
     fi
 fi
-
-
-###############################
-
-
-#------------------------------
-
-UI_WORKING_DIR=$UI_WORKING_DIR/${TYPE}/${TAG}/${DATASETNAME}/${RUNRANGE}/${JSONNAME}/${EXTRANAME}
-
-USER_REMOTE_DIR=$USER_REMOTE_DIR_BASE/${ENERGY}/${TYPE}
-if [ -n "${TAG}" ];then USER_REMOTE_DIR=$USER_REMOTE_DIR/${TAG}; fi
-USER_REMOTE_DIR=$USER_REMOTE_DIR/${DATASETNAME}/${RUNRANGE}
-if [ -n "${JSONNAME}" ];then USER_REMOTE_DIR=$USER_REMOTE_DIR/${JSONNAME}; fi
-if [ -n "${EXTRANAME}" ];then USER_REMOTE_DIR=$USER_REMOTE_DIR/${EXTRANAME}; fi
-USER_REMOTE_DIR=$USER_REMOTE_DIR/unmerged
-
-
-
-#${ENERGY}/
-#${DATASETNAME}/tmp-${DATASETNAME}-${RUNRANGE}
-OUTFILES=`echo $OUTFILES | sed 's|^,||'`
 
 if [ ! -d "tmp" ];then mkdir tmp/; fi
 cat > ${crabFile} <<EOF
@@ -432,10 +454,10 @@ fi
 OUTFILES=`echo ${OUTFILES} | sed 's|,| |'`
 
 if [ -n "${CHECK}" ];then
-    resubmitCrab.sh -u ${UI_WORKING_DIR}
     if [ ! -e "${UI_WORKING_DIR}/res/finished" ];then
 	#echo $dir >> tmp/$TAG.log 
 		echo "[STATUS] Unfinished ${UI_WORKING_DIR}"
+		resubmitCrab.sh -u ${UI_WORKING_DIR}
     else
 		if [ "${isMC}" == "1" ];then
 			OUTFILES="$OUTFILES PUDumper"
@@ -443,7 +465,7 @@ if [ -n "${CHECK}" ];then
 		for file in $OUTFILES
 		do
 			file=`basename $file .root`
-			echo $file
+#			echo "FILE $file"
 			mergeOutput.sh -u ${UI_WORKING_DIR} -g $file
 		done
     fi

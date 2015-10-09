@@ -249,7 +249,7 @@ echo "[INFO] UI_WORKING_DIR=${UI_WORKING_DIR:=prod_alcarereco/${TAG}/${DATASETNA
 
 checkIfRerecoed(){
 	STRING="${RUNRANGE}\t${DATASETPATH}\t${DATASETNAME}\t${STORAGE_ELEMENT}\t${USER_REMOTE_DIR_BASE}\t${TAG}"
-	return `grep -c "\`echo -e $STRING\`" alcarereco_datasets.dat`
+	if [ "`grep -c "\`echo -e $STRING\`" alcarereco_datasets.dat`" == "0" ]; then return 1; else return 0; fi
 	#return is true if not-rerecoed
 }
 
