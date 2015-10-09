@@ -163,7 +163,7 @@ case ${TYPE} in
 	validationTableSlides
 	validationFitSlides
 	validationBackupSlides
-#	validationStabilitySlides
+	validationStabilitySlides
 	if [ "$USER" == "lcorpe" -o "$USER" ==  "lbrianza" ];then
 	cat tex/template.tex \
 			${dirSlides}/validation-${invMass_var}-${selection}-intro_slide.tex \

@@ -69,20 +69,20 @@ TCut GetCut(TString category, int indexEle=0){
 }
 
 /*TCanvas *Plot2D_my(TChain *data, TChain *mc, TString branchname, TString binning, 
-		      TCut selection, 
-		      TString dataLabel, TString mcLabel, 
-		      TString xLabel, TString yLabel, 
-		      int type=2, TString opt="colz", bool usePU=true, bool smear=false, bool scale=false){*/
+  TCut selection, 
+  TString dataLabel, TString mcLabel, 
+  TString xLabel, TString yLabel, 
+  int type=2, TString opt="colz", bool usePU=true, bool smear=false, bool scale=false){*/
 /*TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchname, TString binning,
-                     TString category, TString selection,
-                     TString dataLabel, std::vector<TString> mcLabel_vec, TString xLabel, TString yLabelUnit,
-                     bool logy=false, bool usePU=true, bool ratio=true,bool smear=false, bool scale=false, bool useR9Weight=false){*/
+  TString category, TString selection,
+  TString dataLabel, std::vector<TString> mcLabel_vec, TString xLabel, TString yLabelUnit,
+  bool logy=false, bool usePU=true, bool ratio=true,bool smear=false, bool scale=false, bool useR9Weight=false){*/
 
 TCanvas *Plot2D_profileX_my(TChain *data, TString branchname, TString binning,TString selection,TString opt,TString xLabel, TString yLabel){
   //type == 0: data only
   //type == 1: MC only
   //type == 2: data/MC
-   
+
   TCanvas *c = new TCanvas("c","");
   data->Draw(branchname+">>data_hist"+binning,selection,opt);
   TH2F *d = (TH2F *) gROOT->FindObject("data_hist");
@@ -102,7 +102,7 @@ TCanvas *Plot2D_my(TChain *data, TString branchname, TString binning,TString sel
   //type == 0: data only
   //type == 1: MC only
   //type == 2: data/MC
-   
+
   TCanvas *c = new TCanvas();
   c->SetRightMargin(0.2);
   //  data->Draw(branchname+">>data_hist"+binning, selection,opt);
@@ -120,14 +120,14 @@ TCanvas *Plot2D_my(TChain *data, TString branchname, TString binning,TString sel
 
 
 TCanvas *PlotDataMC2D(TChain *data, TChain *mc, TString branchname, TString binning, 
-		      TCut selection, 
-		      TString dataLabel, TString mcLabel, 
-		      TString xLabel, TString yLabel, 
-		      int type=2, TString opt="colz", bool usePU=true, bool smear=false, bool scale=false){
+    TCut selection, 
+    TString dataLabel, TString mcLabel, 
+    TString xLabel, TString yLabel, 
+    int type=2, TString opt="colz", bool usePU=true, bool smear=false, bool scale=false){
   //type == 0: data only
   //type == 1: MC only
   //type == 2: data/MC
-   
+
   TCanvas *c = new TCanvas("c","");
   TString weightVar;
   if(branchname.Contains("map")){
@@ -144,7 +144,7 @@ TCanvas *PlotDataMC2D(TChain *data, TChain *mc, TString branchname, TString binn
   else  mc->Draw(branchname+">>mc_hist"+binning, selection,opt);
 
   c->Clear();
-  
+
   TH2F *d = (TH2F *) gROOT->FindObject("data_hist");
   TH2F *s = (TH2F *) gROOT->FindObject("mc_hist");
 
@@ -162,17 +162,17 @@ TCanvas *PlotDataMC2D(TChain *data, TChain *mc, TString branchname, TString binn
   s->GetYaxis()->SetTitle(yLabel);
   c->SetRightMargin(0.2);
   return c;
-  
+
 }
 
 TCanvas *PlotDataMC2D(TChain *data, TChain *mc, 
-		      TString branchname, TString binning, 
-		      TString category, TString selection, 
-		      TString dataLabel, TString mcLabel, 
-		      TString xLabel, TString yLabel, 
-		      int type=2, TString opt="colz",
-		      bool usePU=true, bool smear=false, bool scale=false){
-  
+    TString branchname, TString binning, 
+    TString category, TString selection, 
+    TString dataLabel, TString mcLabel, 
+    TString xLabel, TString yLabel, 
+    int type=2, TString opt="colz",
+    bool usePU=true, bool smear=false, bool scale=false){
+
   TCut sel ="";
   if(category.Sizeof()>1) sel= GetCut(category, 0);
   sel+=selection;
@@ -181,20 +181,18 @@ TCanvas *PlotDataMC2D(TChain *data, TChain *mc,
 
 
 TCanvas *PlotDataMC(TChain *data, TChain *mc, TString branchname, TString binning, 
-		    TString category, TString selection, 
-		    TString dataLabel, TString mcLabel, TString xLabel, TString yLabelUnit, 
-		    bool logy=false, bool usePU=true, bool smear=false, bool scale=false){
-  
+    TString category, TString selection, 
+    TString dataLabel, TString mcLabel, TString xLabel, TString yLabelUnit, 
+    bool logy=false, bool usePU=true, bool smear=false, bool scale=false){
+
   TString yLabel; 
-  std::cout<<"entering"<<std::endl;
-  
+
   TCanvas *c = new TCanvas("c","");
   TString branchNameData=branchname;
   TString branchNameMC=branchname;
 
   ElectronCategory_class cutter;
 
-  std::cout<<"entering2"<<std::endl;
 
   TCut selection_data="";
   if(category.Sizeof()>1) selection_data = cutter.GetCut(category, false,0,true);
@@ -205,7 +203,6 @@ TCanvas *PlotDataMC(TChain *data, TChain *mc, TString branchname, TString binnin
   if(category.Sizeof()>1) selection_MC = cutter.GetCut(category, false,0);
   selection_MC+=selection;
 
-  std::cout<<"qui"<<std::endl;
 
   if(smear){
     branchNameMC.ReplaceAll("invMass_SC_regrCorr_pho ","(invMass_SC_regrCorr_pho*sqrt(smearEle[0]*smearEle[1]))");
@@ -230,57 +227,55 @@ TCanvas *PlotDataMC(TChain *data, TChain *mc, TString branchname, TString binnin
   if(branchname=="HLT"){
     TH1F *hlt_data = new TH1F("data_hist","",500,0,500);
     TH1F *hlt_mc = new TH1F("mc_hist","",500,0,500);
-    
-    
+
+
     std::vector< std::string > *HLTNames = new std::vector<std::string>; ///< List of HLT names
     std::vector<Bool_t> *HLTResults = new std::vector<Bool_t>;      ///< 0=fail, 1=fire
-    
+
     data->SetBranchAddress("HLTNames", &HLTNames);
     data->SetBranchAddress("HLTResults", &HLTResults);
-    
+
     data->GetEntries();
     for(Long64_t jentry=0; jentry < data->GetEntriesFast(); jentry++){
       data->GetEntry(jentry);
       std::vector<Bool_t>::const_iterator hltRes_itr=HLTResults->begin();
       for(std::vector<std::string>::const_iterator hlt_itr=HLTNames->begin();
-	  hlt_itr!=HLTNames->end();
-	  hlt_itr++,hltRes_itr++){
-	std::cout << *hlt_itr << std::endl;
-	hlt_data->Fill(hlt_itr-HLTNames->begin(),*hltRes_itr);
+          hlt_itr!=HLTNames->end();
+          hlt_itr++,hltRes_itr++){
+        std::cout << *hlt_itr << std::endl;
+        hlt_data->Fill(hlt_itr-HLTNames->begin(),*hltRes_itr);
       }
     }
     data->ResetBranchAddresses();
 
     mc->SetBranchAddress("HLTNames", &HLTNames);
     mc->SetBranchAddress("HLTResults", &HLTResults);
-    
+
     mc->GetEntries();
     for(Long64_t jentry=0; jentry < mc->GetEntriesFast(); jentry++){
       mc->GetEntry(jentry);
       std::vector<Bool_t>::const_iterator hltRes_itr=HLTResults->begin();
       for(std::vector<std::string>::const_iterator hlt_itr=HLTNames->begin();
-	  hlt_itr!=HLTNames->end();
-	  hlt_itr++,hltRes_itr++){
-	std::cout << *hlt_itr << std::endl;
-	hlt_mc->Fill(hlt_itr-HLTNames->begin(),*hltRes_itr);
+          hlt_itr!=HLTNames->end();
+          hlt_itr++,hltRes_itr++){
+        std::cout << *hlt_itr << std::endl;
+        hlt_mc->Fill(hlt_itr-HLTNames->begin(),*hltRes_itr);
       }
     }
 
     for(std::vector<std::string>::const_iterator hlt_itr=HLTNames->begin();
-	hlt_itr!=HLTNames->end();
-	hlt_itr++){
+        hlt_itr!=HLTNames->end();
+        hlt_itr++){
       int index=hlt_itr-HLTNames->begin()+1;
       if(hlt_mc->GetBinContent(index)>0)
-      hlt_mc->GetXaxis()->SetBinLabel(index,(*hlt_itr).c_str());
+        hlt_mc->GetXaxis()->SetBinLabel(index,(*hlt_itr).c_str());
     }
   } else {
 
-  std::cout<<"qui"<<std::endl;
     data->Draw(branchNameData+">>data_hist"+binning, selection_data);
     if(mc!=NULL){
       if(usePU)  mc->Draw(branchNameMC+">>mc_hist"+binning, selection_MC *"puWeight");
-    else  mc->Draw(branchNameMC+">>mc_hist"+binning, selection_MC);
-  std::cout<<"qui"<<std::endl;
+      else  mc->Draw(branchNameMC+">>mc_hist"+binning, selection_MC);
     }
   }
 
@@ -290,13 +285,12 @@ TCanvas *PlotDataMC(TChain *data, TChain *mc, TString branchname, TString binnin
   if(s==NULL) s=d;
   //d->SaveAs("tmp/d_hist.root");
   s->SaveAs("tmp/s_hist.root");
-  std::cout<<"qui"<<std::endl;
 
   yLabel.Form("Events /(%.2f %s)", s->GetBinWidth(2), yLabelUnit.Data());
   float max = 1.1 * std::max(
-			     d->GetMaximum(),///d->Integral(),
-			     s->GetMaximum() ///s->Integral()
-			     );
+      d->GetMaximum(),///d->Integral(),
+      s->GetMaximum() ///s->Integral()
+      );
   max=1.1*d->GetMaximum();
   std::cout << "max = " << max << std::endl;
   std::cout << "nEvents data: " << d->Integral() << "\t" << d->GetEntries() << std::endl;
@@ -340,12 +334,12 @@ TCanvas *PlotDataMC(TChain *data, TChain *mc, TString branchname, TString binnin
   }
   std::cout << "Variable  & Data & Simulation \\" << std::endl;
   std::cout << "Mean      & " << d->GetMean() << " " << d->GetMeanError() 
-	    << " & " << s_norm->GetMean() <<  " " << s_norm->GetMeanError() << " \\" << std::endl;
+    << " & " << s_norm->GetMean() <<  " " << s_norm->GetMeanError() << " \\" << std::endl;
   std::cout << "Std. dev. & " << d->GetRMS() << " " << d->GetRMSError() 
-	    << " & " << s_norm->GetRMS() << " " << s_norm->GetRMSError() << " \\" << std::endl;
+    << " & " << s_norm->GetRMS() << " " << s_norm->GetRMSError() << " \\" << std::endl;
   std::cout << "\\hline" << std::endl;
   std::cout << "$\\Chi^2$ " <<  d->Chi2Test(s_norm, "UW CHI2/NDF NORM") << std::endl;
-  
+
 
   TLegend *leg = new TLegend(0.6,0.8,1,1);
   if(dataLabel !="") leg->AddEntry(d,dataLabel,"p");
@@ -371,14 +365,14 @@ TCanvas *PlotDataMC(TChain *data, TChain *mc, TString branchname, TString binnin
 #ifdef shervin
 
 TCanvas *PlotHLTDataMC(TChain *data, TChain *mc, TString branchname, TString binning, 
-		    TString category, TString selection, 
-		    TString dataLabel, TString mcLabel, TString xLabel, TString yLabelUnit, 
-		    bool logy=false, bool usePU=true, bool smear=false, bool scale=false){
+    TString category, TString selection, 
+    TString dataLabel, TString mcLabel, TString xLabel, TString yLabelUnit, 
+    bool logy=false, bool usePU=true, bool smear=false, bool scale=false){
 
 
   TH1F *hlt_data("hlt_data","",500,0,500);
   TH1F *hlt_mc("hlt_mc","",500,0,500);
-  
+
 
   std::vector< std::string > HLTNames[1]; ///< List of HLT names
   std::vector<Bool_t> HLTResults[1];      ///< 0=fail, 1=fire
@@ -391,18 +385,18 @@ TCanvas *PlotHLTDataMC(TChain *data, TChain *mc, TString branchname, TString bin
     data->GetEntry(jentry);
     std::vector<Bool_t>::const_iterator hltRes_itr=HLTResults[0].begin();
     for(std::vector<std::string>::const_iterator hlt_itr=HLTNames[0].begin();
-	hlt_itr!=HLTNames[0].end();
-	hlt_itr++,hltRes_itr++){
+        hlt_itr!=HLTNames[0].end();
+        hlt_itr++,hltRes_itr++){
       hlt_data->Fill(hlt_itr-HLTNames[0].begin(),*hltRes_itr);
     }
   }
 
   for(std::vector<std::string>::const_iterator hlt_itr=HLTNames[0].begin();
-	hlt_itr!=HLTNames[0].end();
-	hlt_itr++,hltRes_itr++){
+      hlt_itr!=HLTNames[0].end();
+      hlt_itr++,hltRes_itr++){
     hlt_data->GetXaxis()->SetBinLabel(hlt_itr-HLTNames[0].begin()+1,(*hlt_itr).c_str());
   }
-  
+
   TCanvas *c = new TCanvas("c","");
   c->cd();
   hlt_data->Draw();
@@ -414,14 +408,14 @@ TCanvas *PlotHLTDataMC(TChain *data, TChain *mc, TString branchname, TString bin
 
 
 TCanvas *PlotDataMCMC(TChain *data, TChain *mc, TChain *mc2,
-		      TString branchname, TString binning, 
-		      TString category, TString selection, 
-		      TString dataLabel, TString mcLabel, TString mc2Label,
-		      TString xLabel, TString yLabelUnit, 
-		      bool logy=false, bool usePU=true, bool smear=false, bool scale=false){
-  
+    TString branchname, TString binning, 
+    TString category, TString selection, 
+    TString dataLabel, TString mcLabel, TString mc2Label,
+    TString xLabel, TString yLabelUnit, 
+    bool logy=false, bool usePU=true, bool smear=false, bool scale=false){
+
   TString yLabel; 
-  
+
   TCanvas *c = new TCanvas("c","");
   TString branchNameData=branchname;
   TString branchNameMC=branchname;
@@ -459,7 +453,7 @@ TCanvas *PlotDataMCMC(TChain *data, TChain *mc, TChain *mc2,
     if(usePU)  mc2->Draw(branchNameMC+">>mc2_hist"+binning, selection_data *"puWeight");
     else  mc2->Draw(branchNameMC+">>mc2_hist"+binning, selection_data);
   }
-  
+
 
   c->Clear();
   TH1F *d = (TH1F *) gROOT->FindObject("data_hist");
@@ -482,9 +476,9 @@ TCanvas *PlotDataMCMC(TChain *data, TChain *mc, TChain *mc2,
 
   yLabel.Form("Events /(%.2f %s)", s->GetBinWidth(2), yLabelUnit.Data());
   float max = 1.1 * std::max(
-			     d->GetMaximum(),///d->Integral(),
-			     s->GetMaximum() ///s->Integral()
-			     );
+      d->GetMaximum(),///d->Integral(),
+      s->GetMaximum() ///s->Integral()
+      );
   max=1.1*d->GetMaximum();
   std::cout << "max = " << max << std::endl;
   std::cout << "nEvents data: " << d->Integral() << "\t" << d->GetEntries() << std::endl;
@@ -543,16 +537,16 @@ TCanvas *PlotDataMCMC(TChain *data, TChain *mc, TChain *mc2,
   }
   std::cout << "Variable  & Data & Simulation & Simulation2 \\" << std::endl;
   std::cout << "Mean      & " << d->GetMean() << " " << d->GetMeanError() 
-	    << " & " << s_norm->GetMean() <<  " " << s_norm->GetMeanError() 
-	    << " & " << s2_norm->GetMean() <<  " " << s2_norm->GetMeanError() 
-	    << " \\" << std::endl;
+    << " & " << s_norm->GetMean() <<  " " << s_norm->GetMeanError() 
+    << " & " << s2_norm->GetMean() <<  " " << s2_norm->GetMeanError() 
+    << " \\" << std::endl;
   std::cout << "Std. dev. & " << d->GetRMS() << " " << d->GetRMSError() 
-	    << " & " << s_norm->GetRMS() << " " << s_norm->GetRMSError() 
-	    << " & " << s2_norm->GetRMS() << " " << s2_norm->GetRMSError() 
-	    << " \\" << std::endl;
+    << " & " << s_norm->GetRMS() << " " << s_norm->GetRMSError() 
+    << " & " << s2_norm->GetRMS() << " " << s2_norm->GetRMSError() 
+    << " \\" << std::endl;
   std::cout << "\\hline" << std::endl;
   std::cout << "$\\Chi^2$ " <<  d->Chi2Test(s_norm, "UW CHI2/NDF NORM") << std::endl;
-  
+
 
   TLegend *leg = new TLegend(0.6,0.8,1,1);
   if(dataLabel !="") leg->AddEntry(d,dataLabel,"p");
@@ -578,69 +572,72 @@ TCanvas *PlotDataMCMC(TChain *data, TChain *mc, TChain *mc2,
 
 
 TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchname, TString binning, 
-		     TString category,  TString selection, 
-		     TString dataLabel, std::vector<TString> mcLabel_vec, TString xLabel, TString yLabelUnit, TString outputPath, TString label4Print,
-		     bool logy=false, bool usePU=true, bool ratio=true,bool smear=false, bool scale=false, bool useR9Weight=false, TString pdfIndex=""){
+    TString category,  TString selection, 
+    TString dataLabel, std::vector<TString> mcLabel_vec, TString xLabel, TString yLabelUnit, TString outputPath, TString label4Print,
+    bool logy=false, bool usePU=true, bool ratio=true,bool array=false,bool smear=false, bool scale=false, bool useR9Weight=false, TString pdfIndex=""){
   TStopwatch watch;
   watch.Start();
   //gStyle->SetOptStat(11);//Giuseppe
 
   int nHist= mc_vec.size();
   int colors[4]={kRed,kGreen,kBlue,kCyan};
-  int fillstyle[4]={0,0,0,0}; //3003,3004,3005,3006};
+  int fillstyle[4]={0,0,0,0};
   if(nHist>4) return NULL;
   TString yLabel; 
-  
-  TCanvas *c = new TCanvas("c","");
-  TPad * pad1 = new TPad("pad1", "pad1",0.01,0.13,0.75,1.);  
-  TPad * pad2 = new TPad("pad2", "pad2",0.01,0.001,0.75,0.2);  
-  TPad * pad3 = new TPad("pad3", "pad3",0.68,0.001,1.,0.2);
-  
+
+  TCanvas *c = new TCanvas("c","",600,600);
+//  c->Divide(2,0);
+//  c->cd(1);
+//  TPad * pad1 = new TPad("pad1", "pad1",0.01,0.13,0.75,1.);  
+//  TPad * pad2 = new TPad("pad2", "pad2",0.01,0.001,0.75,0.2);  
+//  TPad * pad3 = new TPad("pad3", "pad3",0.68,0.001,1.,0.2);
+  TPad * pad1 = new TPad("pad1", "pad1",0.01,0.2,0.75,1.);  
+  TPad * pad2 = new TPad("pad2", "pad2",0.01,0.001,0.75,0.1);  
+  TPad * pad3 = new TPad("pad3", "pad3",0.8,0.001,1.,0.2);
+  pad1->Draw();
+  pad2->Draw();
+  pad3->Draw();
+
   pad1->SetRightMargin(0.1);
   pad1->SetLogy();
-  pad1->Draw();
-  pad1->cd();
-  
+
   pad2->SetGrid();
   pad2->SetBottomMargin(0.4);
   pad2->SetRightMargin(0.1);
-  pad2->Draw();
-  pad2->cd();
-  
+
   pad3->SetGrid();    
   //pad2->SetTopMargin(0.01);
   pad3->SetBottomMargin(0.4);
   pad3->SetRightMargin(0.1);
-  pad3->Draw();
-  pad3->cd();
-    
+
   pad1->cd();
-  
+
   TString branchNameData=branchname;
   TString branchNameMC=branchname;
 
   ElectronCategory_class cutter;
   // data->SetBranchStatus("*",0);
-//   std::set<TString> branchList = cutter.GetBranchNameNtuple(category);
-//   for(std::set<TString>::const_iterator itr = branchList.begin();
-//       itr != branchList.end();
-//       itr++){
-//     std::cout << "[STATUS] Enabling branch: " << *itr << std::endl;
-//     data->SetBranchStatus(*itr, 1);
-//   }
-//   data->SetBranchStatus("invMass_SC_regrCorrSemiParV4_ele", 1);
-//   data->SetBranchStatus("invMass_SC_regrCorrSemiParV5_ele", 1);
+  //   std::set<TString> branchList = cutter.GetBranchNameNtuple(category);
+  //   for(std::set<TString>::const_iterator itr = branchList.begin();
+  //       itr != branchList.end();
+  //       itr++){
+  //     std::cout << "[STATUS] Enabling branch: " << *itr << std::endl;
+  //     data->SetBranchStatus(*itr, 1);
+  //   }
+  //   data->SetBranchStatus("invMass_SC_regrCorrSemiParV4_ele", 1);
+  //   data->SetBranchStatus("invMass_SC_regrCorrSemiParV5_ele", 1);
   if(branchNameData.Contains("energySCEle_regrCorrSemiParV5_pho")) cutter.energyBranchName="energySCEle_regrCorrSemiParV5_pho";
   else if(branchNameData.Contains("energySCEle_regrCorrSemiParV5_ele")) cutter.energyBranchName="energySCEle_regrCorrSemiParV5_ele";
   else if (branchNameData.Contains("energySCEle")) cutter.energyBranchName="energySCEle";
 
+  //  std::cout << " LC DEBUG - Category " << category << " size " << category.Sizeof() << std::endl;
   TCut selection_data="";
-  if(category.Sizeof()>1) selection_data = cutter.GetCut(category, false,0,scale);
+  if(category.Sizeof()>1) {selection_data = cutter.GetCut(category, false,0,scale);}
   selection_data+=selection;
   TCut selection_MC="";
   if(category.Sizeof()>1) selection_MC = cutter.GetCut(category, false,0);
   selection_MC+=selection;
-
+  //  std::cout << " LC DEBUG - selection " << selection << " ,data selection " << selection_data << ", mc selection " << selection_MC.GetName() << std::endl;
   if(smear){
     branchNameMC.ReplaceAll("invMass_SC_regrCorr_pho ","(invMass_SC_regrCorr_pho*sqrt(smearEle[0]*smearEle[1]))");
     branchNameMC.ReplaceAll("invMass_SC_regrCorrSemiParV5_pho","(invMass_SC_regrCorrSemiParV5_pho*sqrt(smearEle[0]*smearEle[1]))");
@@ -664,49 +661,101 @@ TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchn
     if(!branchNameData.Contains("scale"))    branchNameData.ReplaceAll("energySCEle_regrCorrSemiParV5_ele","(energySCEle_regrCorrSemiParV5_ele*scaleEle)");
   }    
 
-    std::cout << branchNameData << "\t" << branchNameMC << std::endl;
+  std::cout << branchNameData << "\t" << branchNameMC << std::endl;
   //  return NULL;
 
-  
+
   // Draw histograms
+  if (array){
+				if (label4Print=="esEnergyFraction"){
+        data->Draw("esEnergySCEle[0]/(rawEnergySCEle[0]+esEnergySCEle[0])>>data_hist"+binning, selection_data);
+        data->Draw("esEnergySCEle[1]/(rawEnergySCEle[1]+esEnergySCEle[1])>>data_hist1"+binning, selection_data);
+
+				} else {
+		
+    data->Draw(branchNameData+"[0]>>data_hist"+binning, selection_data);
+    std::cout << "lc 1 " << std::endl;
+    data->Draw(branchNameData+"[1]>>data_hist1"+binning, selection_data);
+    std::cout << "lc 2 " << std::endl;
+		}
+  }else {
     data->Draw(branchNameData+">>data_hist"+binning, selection_data);
-    if(nHist > 0){
-      for(std::vector<TChain *>::const_iterator mc_itr = mc_vec.begin();
-	  mc_itr != mc_vec.end();
-	  mc_itr++){
-	TChain *mc = *mc_itr;
-// 	mc->SetBranchStatus("*",0);
-// 	for(std::set<TString>::const_iterator itr = branchList.begin();
-// 	    itr != branchList.end();
-// 	    itr++){
-// 	  //std::cout << "[STATUS] Enabling branch: " << *itr << std::endl;
-// 	  mc->SetBranchStatus(*itr, 1);
-// 	}
-// 	mc->SetBranchStatus("invMass_SC_regrCorrSemiParV4_ele", 1);
-// 	mc->SetBranchStatus("invMass_SC_regrCorrSemiParV5_ele", 1);
-// 	mc->SetBranchStatus("puWeight",1);
+  }
+  if(nHist > 0){
+    for(std::vector<TChain *>::const_iterator mc_itr = mc_vec.begin();
+        mc_itr != mc_vec.end();
+        mc_itr++){
+      TChain *mc = *mc_itr;
+      //   mc->SetBranchStatus("*",0);
+      //   for(std::set<TString>::const_iterator itr = branchList.begin();
+      //       itr != branchList.end();
+      //       itr++){
+      //     //std::cout << "[STATUS] Enabling branch: " << *itr << std::endl;
+      //     mc->SetBranchStatus(*itr, 1);
+      //   }
+      //   mc->SetBranchStatus("invMass_SC_regrCorrSemiParV4_ele", 1);
+      //   mc->SetBranchStatus("invMass_SC_regrCorrSemiParV5_ele", 1);
+      //   mc->SetBranchStatus("puWeight",1);
 
-	TString mcHistName; mcHistName+=mc_itr-mc_vec.begin(); mcHistName+="_hist";
-	TString weights="mcGenWeight";
-	if(pdfIndex!="") weights+="*(pdfWeights_cteq66["+pdfIndex+"]/pdfWeights_cteq66[0])";
-	if(usePU) weights+="*puWeight";
-	if(useR9Weight) weights+="*r9Weight";
-	mc->Draw(branchNameMC+">>"+mcHistName+binning, selection_MC *weights.Data());
+      TString mcHistName; mcHistName+=mc_itr-mc_vec.begin(); mcHistName+="_hist";
+      TString weights= "(mcGenWeight/fabs(mcGenWeight))";
+     // TString weights= "(1)";
+			TString selection_MC2 =selection_MC.GetTitle();
+			TString finalCut = "("+selection_MC2+")*"+weights;
 
-      }
+
+      if(pdfIndex!="") weights+="*(pdfWeights_cteq66["+pdfIndex+"]/pdfWeights_cteq66[0])";
+      if(usePU) weights+="*puWeight";
+      if(useR9Weight) weights+="*r9Weight";
+			std::cout << "DEBUG weight " << weights << std::endl;
+			std::cout << "DEBUG selectionMC " << selection_MC << std::endl;
+			std::cout << "DEBUG combined weight cut " << finalCut << std::endl;
+      if (array){
+				if (label4Print=="esEnergyFraction"){
+				std::cout << " DEBUG XXXXXX 1" << std::endl;	
+        mc->Draw("esEnergySCEle[0]/(rawEnergySCEle[0]+esEnergySCEle[0])>>"+mcHistName+binning, finalCut);
+				std::cout << " DEBUG XXXXXX 2" << std::endl;	
+        mc->Draw("esEnergySCEle[1]/(rawEnergySCEle[1]+esEnergySCEle[1])>>"+mcHistName+"1"+binning, finalCut);
+				std::cout << " DEBUG XXXXXX 3" << std::endl;	
+
+				} else{
+      //TString weights= "(mcGenWeight[0]/fabs(mcGenWeight[0]))";
+       // mc->Draw(branchNameMC+"[0]>>"+mcHistName+binning, selection_MC );//*weights.Data());
+        mc->Draw(branchNameMC+"[0]>>"+mcHistName+binning, finalCut);
+      //  mc->Draw(branchNameMC+"[1]>>"+mcHistName+"1"+binning, selection_MC); // *(weights.Data()) );
+			  c->Print(mcHistName+binning+".pdf");
+        mc->Draw(branchNameMC+"[1]>>"+mcHistName+"1"+binning, finalCut );
+			  c->Print(mcHistName+"1"+binning+".pdf");
+				}
+				} else {
+       // mc->Draw(branchNameMC+">>"+mcHistName+binning, selection_MC );//*weights.Data());
+        mc->Draw(branchNameMC+">>"+mcHistName+binning, finalCut);      }
+
     }
-
+  }
 
   c->Clear();
+ // pad1->cd();
+ // pad1->Clear();
   TLegend *leg = new TLegend(0.6,0.75,0.9,0.9);
   leg->SetBorderSize(1);
   leg->SetFillColor(0);
   leg->SetTextSize(0.04);
-//   if(dataLabel !="" && mcLabel !="") leg->Draw();
-//   //c->GetListOfPrimitives()->Add(leg,"");
+  //   if(dataLabel !="" && mcLabel !="") leg->Draw();
+  //   //c->GetListOfPrimitives()->Add(leg,"");
 
 
   TH1F *d = (TH1F *) gROOT->FindObject("data_hist");
+  std::cout << " DEBUG d size " << d->GetEntries()<< std::endl;
+  if (array){
+    TH1F *d1 = (TH1F *) gROOT->FindObject("data_hist1");
+    std::cout << " DEBUG d1 size " << d1->GetEntries()<< std::endl;
+    d1->Sumw2();
+    d->Sumw2();
+    d->Add(d1,1);
+		c->Print("test3.pdf");
+  }
+  std::cout << " DEBUG d sum, size " << d->GetEntries()<< std::endl;
   if(dataLabel !="") leg->AddEntry(d,dataLabel,"p");
   d->SetStats(0);
   d->SetTitle("");
@@ -722,12 +771,12 @@ TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchn
   //s->SaveAs("tmp/s_hist.root");
 
   yLabel.Form("Events /(%.2f %s)", d->GetBinWidth(2), yLabelUnit.Data());
-  
+
   float max = 0; //1.1 * std::max(
   max=1.2*d->GetMaximum();
   std::cout << "max = " << max << std::endl;
   std::cout << "nEvents data: " << d->Integral() << "\t" << d->GetEntries() << std::endl;
-    
+
 
   d->GetYaxis()->SetTitle(yLabel);
   d->GetXaxis()->SetTitle(xLabel);
@@ -736,12 +785,20 @@ TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchn
     d->GetYaxis()->SetRangeUser(0.1,max);
     c->SetLogy();
   } else {
-      d->GetYaxis()->SetRangeUser(0,max);
+    d->GetYaxis()->SetRangeUser(0,max);
   }
 
   for(int i=0; i < nHist; i++){
     TString mcHistName; mcHistName+=i; mcHistName+="_hist";
     TH1F *s = (TH1F *) gROOT->FindObject(mcHistName);
+    if (array) {
+    TString mcHistName1; mcHistName1+=i; mcHistName1+="_hist1";
+    TH1F *s1 = (TH1F *) gROOT->FindObject(mcHistName1);
+		s1->Sumw2();
+		s->Sumw2();
+    s->Add(s1,1);
+    }
+
     s->SetStats(0);
     s->SetTitle("");
     if(s==NULL) continue;
@@ -765,10 +822,17 @@ TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchn
     s->SetFillColor(colors[i]);
     s->SetLineColor(colors[i]);
     s->SetLineWidth(2);
-
+//		pad1->cd();
+//		TCanvas *c2 = new TCanvas("c2","c2",500,500);
+//		c2->cd();
     TH1F* s_norm = NULL;
-    if(i==0) s_norm = (TH1F *) (s->DrawNormalized("hist", d->Integral()));
-    else s_norm = (TH1F *) (s->DrawNormalized("hist same", d->Integral()));
+//		std::cout << "debug s->entries "<< s->GetEntries() << std::endl;
+ //   s->GetYaxis()->SetRangeUser(0,1.2*s->GetMaximum());
+	//	s->Draw("hist");
+    if(i==0) {s_norm = (TH1F *)  (s->DrawNormalized("hist", d->Integral())); std::cout << " drew signal plot (norm " << std::endl;}
+   // if(i==0) {s_norm = (TH1F *)  (s->DrawNormalized("hist", d->Integral()));s->Draw(); std::cout << " drew signal plot (norm " << std::endl;}
+    else {s_norm = (TH1F *) (s->DrawNormalized("hist same", d->Integral())); std::cout << " drew signal plot on same" << std::endl;}
+ //   c2->SaveAs("test.pdf");
     if(logy){
       //d_norm->GetYaxis()->SetRangeUser(0.1,max);
       s_norm->GetYaxis()->SetRangeUser(0.1,max);
@@ -779,29 +843,36 @@ TCanvas *PlotDataMCs(TChain *data, std::vector<TChain *> mc_vec, TString branchn
 
     if(mcLabel_vec[i] !="") leg->AddEntry(s,mcLabel_vec[i], "lf");
 
-//     TH1F *sRatio = (TH1F *) s->Clone(mcHistName+"_ratio");
-//     sRatio->Divide(d);
-//     if(ratio){
-//       pad2->cd();
-//       if(i==0) sRatio->Draw();
-//       else sRatio->Draw("same");
-//     }
-//     pad1->cd();
+//         TH1F *sRatio = (TH1F *) s->Clone(mcHistName+"_ratio");
+ //        sRatio->Divide(d);
+  //       if(ratio){
+ //        //  c->cd(2);
+  //         pad2->cd();
+   //        if(i==0) sRatio->Draw();
+    //       else sRatio->Draw("same");
+     //    pad1->cd();
+      //   }
+
   }
 
+  //       pad1->cd();
   //TH1F* d_norm = s_norm;
   //if(d!=s) d_norm = (TH1F *) (d->DrawNormalized("p same", d->Integral()));
-  if(nHist>0) d->Draw("p same");
-  else d->Draw("p");
+    if(nHist>0) d->Draw("p same");
+    else d->Draw("p");
+//  d->Draw("ap");
 
-//   std::cout << "Variable  & Data & Simulation \\" << std::endl;
-//   std::cout << "Mean      & " << d->GetMean() << " " << d->GetMeanError() 
-// 	    << " & " << s_norm->GetMean() <<  " " << s_norm->GetMeanError() << " \\" << std::endl;
-//   std::cout << "Std. dev. & " << d->GetRMS() << " " << d->GetRMSError() 
-// 	    << " & " << s_norm->GetRMS() << " " << s_norm->GetRMSError() << " \\" << std::endl;
-//   std::cout << "\\hline" << std::endl;
-//   std::cout << "$\\Chi^2$ " <<  d->Chi2Test(s_norm, "UW CHI2/NDF NORM") << std::endl;
-  
+//  c->SaveAs("test.pdf");
+//  return c;
+
+  //   std::cout << "Variable  & Data & Simulation \\" << std::endl;
+  //   std::cout << "Mean      & " << d->GetMean() << " " << d->GetMeanError() 
+  //       << " & " << s_norm->GetMean() <<  " " << s_norm->GetMeanError() << " \\" << std::endl;
+  //   std::cout << "Std. dev. & " << d->GetRMS() << " " << d->GetRMSError() 
+  //       << " & " << s_norm->GetRMS() << " " << s_norm->GetRMSError() << " \\" << std::endl;
+  //   std::cout << "\\hline" << std::endl;
+  //   std::cout << "$\\Chi^2$ " <<  d->Chi2Test(s_norm, "UW CHI2/NDF NORM") << std::endl;
+
   if(mcLabel_vec.size()!=0) leg->Draw();
 
   TPaveText *pv = new TPaveText(0.25,0.95,0.65,1,"NDC");
@@ -854,14 +925,14 @@ std::vector<TChain *> MakeChainVector(TChain *v1){
 
 
 // TH2F *PlotDataMCs(TChain *data, TString branchname, 
-// 		  TString category, TString selection, 
-// 		  bool usePU=true, bool smear=false, bool scale=false){
+//       TString category, TString selection, 
+//       bool usePU=true, bool smear=false, bool scale=false){
 
 //     ElectronCategory_class cutter;
 //     TCut selection_data="";
 //     if(category.Sizeof()>1) selection_data = cutter.GetCut(category, false,0);
 //     selection_data+=selection;
-    
+
 //   if(smear){
 //     branchNameMC.ReplaceAll("invMass_SC_regrCorr_pho ","(invMass_SC_regrCorr_pho*sqrt(smearEle[0]*smearEle[1]))");
 //     branchNameMC.ReplaceAll("energySCEle_regrCorr_pho ","(energySCEle_regrCorr_pho*smearEle) ");
@@ -875,7 +946,7 @@ std::vector<TChain *> MakeChainVector(TChain *v1){
 //     branchNameData.ReplaceAll("energySCEle_regrCorr_pho[0]","(energySCEle_regrCorr_pho[0]*corrEle[0])");
 //     branchNameData.ReplaceAll("energySCEle_regrCorr_pho[1]","(energySCEle_regrCorr_pho[1]*corrEle[1])");
 //   }
-  
+
 //   // Draw histograms
 //   TString branchNameData=branchname;
 //   data->Draw(branchNameData+">>eventlist", selection_data,"eventlist");
@@ -895,7 +966,7 @@ std::vector<TChain *> MakeChainVector(TChain *v1){
 // //   yLabel="iEta";
 // //   xLabel="iPhi";
 // //   c->SetGridx();
-  
+
 //   Float_t iPhi[2], iEta[2];
 //   data->SetBranchAddress("seedYSCEle", iPhi);
 //   data->SetBranchAddress("seedXSCEle", iEta);
@@ -909,9 +980,9 @@ std::vector<TChain *> MakeChainVector(TChain *v1){
 //       selector_ele2->UpdateFormulaLeaves();
 //     }
 //     double value=selector_ele1->EvalInstance();
-    
+
 //     sum+=value;
 //     sum2+=value*value;
 //   }
-  
+
 // }

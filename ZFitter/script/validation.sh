@@ -173,7 +173,11 @@ if [ -n "$VALIDATION" ];then
     ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
 	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
 	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT > ${outDirData}/log/validation.log||  exit 1
-
+echo "
+    ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
+	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
+	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT > ${outDirData}/log/validation.log||  exit 1
+"
 
 
     ./script/makeTable.sh --regionsFile ${regionFile}  --commonCut=${commonCut} \
@@ -187,12 +191,22 @@ regionFile=data/regions/stability.dat
 ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --runRangesFile ${runRangesFile} \
     $updateOnly --invMass_var ${invMass_var} \
     --outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
-    --outDirImgMC=${outDirMC}/img    --outDirImgData=${outDirData}/img --commonCut=${commonCut}> ${outDirData}/log/stability.log || exit 1
+    --outDirImgMC=${outDirMC}/img    --outDirImgData=${outDirData}/img --commonCut=${commonCut} || exit 1 #> ${outDirData}/log/stability.log || exit 1
+echo " 
+    ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
+	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
+	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT > ${outDirData}/log/validation.log||  exit 1 "
+echo "making table"
+echo "
+./script/makeTable.sh --regionsFile ${regionFile}  --runRangesFile ${runRangesFile} --commonCut=${commonCut} \
+    --outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
+    >  ${outDirTable}/monitoring_stability-${invMass_var}-${selection}.tex || exit 1"
 
 ./script/makeTable.sh --regionsFile ${regionFile}  --runRangesFile ${runRangesFile} --commonCut=${commonCut} \
     --outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
     >  ${outDirTable}/monitoring_stability-${invMass_var}-${selection}.tex || exit 1
 
+echo "made table"
 
 
 ###################### Make stability plots
@@ -200,12 +214,28 @@ if [ ! -d ${outDirData}/img/stability/$xVar ];then
     mkdir -p ${outDirData}/img/stability/$xVar
 fi
 
+echo "Make stability plots"
+
 ./script/stability.sh -t  ${outDirTable}/monitoring_stability-${invMass_var}-${selection}.tex \
     --outDirImgData ${outDirData}/img/stability/$xVar/ -x $xVar -y peak || exit 1
 ./script/stability.sh -t  ${outDirTable}/monitoring_stability-${invMass_var}-${selection}.tex \
     --outDirImgData ${outDirData}/img/stability/$xVar/ -x $xVar -y scaledWidth || exit 1
 fi
 
+if [ $USER = "lcorpe" ]; then
+WEBDIR=/afs/cern.ch/user/l/lcorpe/www/MoCa/stability/$baseDir
+mkdir -p $WEBDIR/slides
+mkdir -p $WEBDIR/stability
+cp ${outDirData}/img/stability/$xVar/*eps $WEBDIR/stability/.
+cd $WEBDIR/stability/.
+echo $PWD
+for i in *.eps ; do convert "$i" "${i%.*}.png" ; done
+for i in *.eps ; do convert "$i" "${i%.*}.pdf" ; done
+cp /afs/cern.ch/user/l/lcorpe/public/index.php .
+cd -
+
+echo "[INFO] Stability plots at https://lcorpe.web.cern.ch/lcorpe/MoCa/stability/$baseDir"  
+fi
 
 
 if [ -n "$SLIDES" ];then
@@ -218,7 +248,8 @@ if [ -n "$SLIDES" ];then
     do
 	echo "${file%????}.pdf" #remove four last characters ".eps" by ".pdf"
 	if [ ! -e "${file%????}.pdf" ];then
-	    echo "processing Data $file" && epstopdf $file
+	    echo "processing Data $file" && convert "$file" "${file%.*}.png"
+	    echo "processing Data $file" && convert "$file" "${file%.*}.pdf"
 	fi;
     done
    
@@ -229,7 +260,7 @@ if [ -n "$SLIDES" ];then
 	
 	if [ $USER == "lcorpe" -o $USER == "lbrianza" ];then
 	#for Louie and Luca, lazy: automatically replace variable names and compile latex...
-	cat $configFile | grep s1 >tmp/mc.txt
+	cat $configFile | grep "s1 " | grep -v "#" >tmp/mc.txt
 	cat $configFile | grep d1 >tmp/data.txt
 	sed -e "s|_|-lc|g" tmp/data.txt >tmp/data.1.txt
 	sed -e "s|\/|!|g" tmp/data.1.txt >tmp/data.txt
@@ -237,43 +268,49 @@ if [ -n "$SLIDES" ];then
 	sed -e "s|_|-lc|g" tmp/mc.1.txt >tmp/mc.txt
 	#cp tmp/data.1.txt tmp/data.txt 
 	#cp tmp/mc.1.txt tmp/mc.txt 
-	rerecoTag=`cut -d "!" -f16 tmp/data.txt`
-	runRange=`cut -d "!" -f18 tmp/data.txt`
-	json=`cut -d "!" -f19 tmp/data.txt`
-	dataNtuples=`cut -d ":" -f2 tmp/data.txt`
-	mcNtuples=`cut -d ":" -f2 tmp/mc.txt`
+	#rerecoTag=`cut -d "!" -f16 tmp/data.txt`
+	#runRange=`cut -d "!" -f18 tmp/data.txt`
+	#json=`cut -d "!" -f19 tmp/data.txt`
+	#dataNtuples=`cut -d ":" -f2 tmp/data.txt`
+	#mcNtuples=`cut -d ":" -f2 tmp/mc.txt`
 	echo $CMSSW_VERSION >  tmp/out.txt
-	cmssw_version=`sed "s|_|-lc|g" tmp/out.txt`
+	#cmssw_version=`sed "s|_|-lc|g" tmp/out.txt`
 	echo $invMass_var >  tmp/out.txt
-	invmass_var=`sed "s|_|-lc|g" tmp/out.txt`
+	#invmass_var=`sed "s|_|-lc|g" tmp/out.txt`
 	echo $invmass_var
 	echo "$rerecoTag "
 	echo "$runRange "
 	echo "$json "
 	echo "$dataNtuples "
+	echo "$mcNtuples "
 	echo "$cmssw_version "
-	
+	echo " -e 's/0MCNtuples/$mcNtuples/g' \ "
 
-  sed -e "s/0intLumi/19.636 (\/pb)/g" \
-	-e "s/0runRange/$runRange/g" \
-	-e "s/0globalTag/$GLOBALTAG/g" \
-	-e "s/0rerecoTag/$rerecoTag /g" \
-	-e "s/0gitTag/$GITTAG/g" \
-	-e "s/0cmssw/$cmssw_version/g" \
-	-e "s/0dataNtuples/$dataNtuples/g" \
+#	-e "s/0runRange/$runRange/g" \
+#	-e "s/0globalTag/$GLOBALTAG/g" \
+#	-e "s/0rerecoTag/$rerecoTag /g" \
+#	-e "s/0cmssw/$cmssw_version/g" \
+#	-e "s/0gitTag/$GITTAG/g" \
+#	-e "s/0dataNtuples/$dataNtuples/g" \
+
+  sed -e "s/0intLumi/$intLumi (\/pb)/g" \
 	-e "s/0MCNtuples/$mcNtuples/g" \
 	-e "s/0floatingTail/$FLOATTAILSTEXT/g" \
 	-e "s/std. SC energy/$rerecoTag $invmass_var/g" \
   -e "s/0puReweight/Reweight using nPV distributions in data and MC/g" \
 	-e "s/0json/$json/g" tmp/validation-${invMass_var}-slides.tex > tmp/tmp.tex 
 	
+	
 	sed -e "s|!|\/|g" tmp/tmp.tex >tmp/tmp.1.tex
 	sed -e "s|13TeV|13TeV |g" tmp/tmp.1.tex >tmp/tmp.2.tex
 	sed -e "s|-lc|\\\_|g" tmp/tmp.2.tex > tmp/validation-${invMass_var}-slides.tex
-	#	rm tmp/tmp.tex
-    pdflatex tmp/validation-${invMass_var}-slides.tex
+   	rm tmp/tmp.tex
+    pdflatex -interaction nonstopmode -file-line-error tmp/validation-${invMass_var}-slides.tex
     cp tmp/validation-${invMass_var}-*.tex $baseDir/slides/. 
     cp validation-${invMass_var}-slides.pdf  $baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf
+		cp $baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf $WEBDIR/slides/.
+		echo "$baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf"
+		echo "Slides at $WEBDIR/slides."
 	fi
 		
 fi
