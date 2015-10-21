@@ -267,6 +267,8 @@ private:
   Float_t rawEnergySCEle[3]; ///< SC energy without cluster corrections
   Float_t rawEnergySCEle_must[3]; ///< SC mustach energy without cluster corrections
   Float_t esEnergySCEle[3];  ///< pre-shower energy associated to the electron
+	Float_t esP1EnergySCEle[3];  ///< pre-shower rechit energy sum of Plane 1 associated to the electron 
+	Float_t esP2EnergySCEle[3];  ///< pre-shower recHit energy sum of Plane 2 associated to the electron
 
 
   Float_t energySCEle_corr[3];  ///< ecal energy with corrections base on type of electron (see #classificationEle)
@@ -1126,6 +1128,8 @@ void ZNtupleDumper::InitNewTree(){
   tree->Branch("rawEnergySCEle", rawEnergySCEle, "rawEnergySCEle[3]/F");
   tree->Branch("rawEnergySCEle_must", rawEnergySCEle_must, "rawEnergySCEle_must[3]/F");
   tree->Branch("esEnergySCEle", esEnergySCEle, "esEnergySCEle[3]/F");
+  tree->Branch("esP1EnergySCEle", esP1EnergySCEle, "esP1EnergySCEle[3]/F");
+  tree->Branch("esP2EnergySCEle", esP2EnergySCEle, "esP2EnergySCEle[3]/F");
 
   tree->Branch("energySCEle_corr", energySCEle_corr, "energySCEle_corr[3]/F");
 
@@ -1379,6 +1383,7 @@ void ZNtupleDumper::TreeSetSingleElectronVar(const pat::Electron& electron1, int
 
   rawEnergySCEle[index]  = electron1.superCluster()->rawEnergy();
   esEnergySCEle[index] = electron1.superCluster()->preshowerEnergy();
+
 #ifndef CMSSW42X
   energySCEle_corr[index] = electron1.correctedEcalEnergy();
 #else
@@ -1859,6 +1864,28 @@ void ZNtupleDumper:: TreeSetMuMuGammaVar(const pat::Photon& photon, const pat::M
   delete m2;
  
   return;
+}
+
+
+
+// method to get the raw energy of one plane of ES summing the energy of only recHits associated to the electron SC
+void ZNtupleDumper::GetESPlaneRawEnergy(const pat::Electron& electron, unsigned int planeIndex){
+
+    std::vector< std::pair<DetId, float> > hitsAndFractions_ele = electron.hitsAndFractions();
+    for (std::vector<std::pair<DetId, float> >::const_iterator detitr = hitsAndFractions_ele.begin();
+	 detitr != hitsAndFractions_ele.end(); detitr++ ){
+      
+		if(detitr->
+      double hitenergy = 0;
+      EcalRecHitCollection::const_iterator oneHit = recHitsEE->find( (detitr -> first) ) ;
+      hitenergy = oneHit->energy();
+
+      sumLC_E += laserHandle_->getLaserCorrection(detitr->first, runTime_) * hitenergy;
+      sumE    += hitenergy;
+    }
+    avgLCSCEle[index] = sumLC_E / sumE;
+
+	return;
 }
 
 //////////////
