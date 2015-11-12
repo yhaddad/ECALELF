@@ -12,6 +12,8 @@ xVar=runNumber
 pdateOnly="--updateOnly"
 GITTAG="lcorpe:topic-quickrereco-lcsh-fix-rebase" #should eventually get this automatically from file or option
 GLOBALTAG="74X-lcdataRun2-lcPrompt-lcv0" #should eventually get this automatically from file or option
+REF=ref_231015
+imgFormat="eps"
 
 # VALIDATION=y
 # STABILITY=y
@@ -29,10 +31,13 @@ usage(){
     echo " --validation        "
     echo " --stability         "
     echo " --slides            "
+    echo " --ref compare to a reference rereco            "
     echo " --noPU            "
     echo " --floatTails            "
     echo " --baseDir arg (=${baseDir})  base directory for outputs"
     echo " --rereco arg  name of the tag used fro the rereco"
+    echo " --imgFormat arg eps or pdf"
+		echo " --dryRun make all the directories but don't run fits"
 }
 desc(){
     echo "#####################################################################"
@@ -45,7 +50,7 @@ desc(){
 
 
 # options may be followed by one colon to indicate they have a required argument
-if ! options=$(getopt -u -o hf: -l help,runRangesFile:,selection:,invMass_var:,puName:,dataName:,baseDir:,rereco:,validation,stability,slides,noPU,floatTails -- "$@")
+if ! options=$(getopt -u -o hf: -l help,runRangesFile:,selection:,invMass_var:,puName:,dataName:,baseDir:,rereco:,validation,stability,slides,noPU,floatTails,dryRun,imgFormat:,ref: -- "$@")
 then
     # something went wrong, getopt will put out an error message for us
     exit 1
@@ -60,15 +65,19 @@ do
         -f) configFile=$2; shift;;
         --invMass_var) invMass_var=$2; echo "[OPTION] invMass_var = ${invMass_var}"; shift;;
 	--puName) puName=$2; shift;;
+	--ref) REF=$2; shift;;
 	--dataName) dataName=$2; shift;;
 	--runRangesFile) runRangesFile=$2; echo "[OPTION] runRangesFile = ${runRangesFile}"; shift;;
 	--baseDir) baseDir=$2; echo "[OPTION] baseDir = $baseDir"; shift;;
+	--imgFormat) imgFormat=$2; echo "[OPTION] imgFormat = $imgFormat"; shift;;
 	--rereco) rereco=$2; echo "[OPTION] rereco = $rereco"; shift;;
 	--validation) VALIDATION=y;;
 	--stability)  STABILITY=y;;
 	--slides)     SLIDES=y;;
 	--noPU)     NOPUOPT="--noPU"; NOPU="noPU";;
 	--floatTails)    FLOATTAILSOPT="--fit_type_value=0"; FLOATTAILS="floatingTail"; FLOATTAILSTEXT="Floating Tail";;
+	--dryRun)     DRYRUN="1";;
+	--selection) selection=$2; echo "test selection" $selection ; shift;;
         (--) shift; break;;
         (-*) usage; echo "$0: error - unrecognized option $1" 1>&2; usage >> /dev/stderr; exit 1;;
         (*) break;;
@@ -79,9 +88,9 @@ done
 if [ -n "$NOPU" ];then
   baseDir="$baseDir-$NOPU" 
 fi
-if [ -n "$FLOATTAILS" ];then
-  baseDir="$baseDir-$FLOATTAILS" 
-fi
+#if [ -n "$FLOATTAILS" ];then
+#  baseDir="$baseDir-$FLOATTAILS" 
+#fi
 
 
 if [ -z "${VALIDATION}" -a -z "${STABILITY}" -a -z "${SLIDES}" ];then
@@ -99,15 +108,15 @@ if [ -z "${configFile}" ];then
     exit 1
 fi
 
-case ${selection} in
-    WP80_PU)
-        ;;
-    WP90_PU)
-	;;
-    *)
-			exit 1
-        ;;
-esac
+#case ${selection} in
+#    WP80_PU)
+#        ;;
+#    WP90_PU)
+#	;;
+#    *)
+#			exit 1
+#        ;;
+#esac
 
 
 
@@ -163,6 +172,10 @@ if [ ! -e "${outDirData}/fitres" ];then mkdir ${outDirData}/fitres -p; fi
 if [ ! -e "${outDirData}/img" ];then mkdir ${outDirData}/img -p; fi
 if [ ! -e "${outDirData}/log" ];then mkdir ${outDirData}/log -p; fi
 
+#if [ -z "$FLOATTAILSOPT" ] ;then cp $REF/MC/DYJets_madgraph-RunIISpring15DR74-Asym25ns-allRange/pufile_tot/$selection/${invMass_var}/fitres/* ${outDirData}/fitres/. || exit 1 fi
+ cp $REF/MC/DYJets_madgraph-RunIISpring15DR74-Asym25ns-allRange/pufile_tot/$selection/${invMass_var}/fitres/* ${outDirData}/fitres/. 
+if [ -n "$DRYRUN" ]; then exit 0; fi
+
 # keep track of the MC used to take the tail parameter for data
 echo "$outDirMC" > $outDirData/whichMC.txt
 
@@ -170,14 +183,14 @@ if [ -n "$VALIDATION" ];then
     mcSample=${mcName}
     dataSample=${dataName}
     regionFile=data/regions/validation.dat
-    ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
-	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
-	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT > ${outDirData}/log/validation.log||  exit 1
 echo "
     ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
 	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
-	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT > ${outDirData}/log/validation.log||  exit 1
+	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT --imgFormat $imgFormat --selection $selection > ${outDirData}/log/validation.log||  exit 1
 "
+    ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
+	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
+	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT --imgFormat $imgFormat --selection $selection> ${outDirData}/log/validation.log||  exit 1
 
 
     ./script/makeTable.sh --regionsFile ${regionFile}  --commonCut=${commonCut} \
@@ -191,11 +204,12 @@ regionFile=data/regions/stability.dat
 ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --runRangesFile ${runRangesFile} \
     $updateOnly --invMass_var ${invMass_var} \
     --outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
-    --outDirImgMC=${outDirMC}/img    --outDirImgData=${outDirData}/img --commonCut=${commonCut} || exit 1 #> ${outDirData}/log/stability.log || exit 1
+    --outDirImgMC=${outDirMC}/img    --outDirImgData=${outDirData}/img --commonCut=${commonCut}  \
+		--imgFormat $imgFormat --selection $selection|| exit 1 #> ${outDirData}/log/stability.log || exit 1
 echo " 
     ./bin/ZFitter.exe -f ${configFile} --regionsFile ${regionFile}  --invMass_var ${invMass_var} \
 	--outDirFitResMC=${outDirMC}/fitres --outDirFitResData=${outDirData}/fitres \
-	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT > ${outDirData}/log/validation.log||  exit 1 "
+	--outDirImgMC=${outDirMC}/img   --outDirImgData=${outDirData}/img  --commonCut $commonCut $NOPUOPT $FLOATTAILSOPT --imgFormat $imgFormat > ${outDirData}/log/validation.log||  exit 1 "
 echo "making table"
 echo "
 ./script/makeTable.sh --regionsFile ${regionFile}  --runRangesFile ${runRangesFile} --commonCut=${commonCut} \
@@ -223,14 +237,15 @@ echo "Make stability plots"
 fi
 
 if [ $USER = "lcorpe" ]; then
-WEBDIR=/afs/cern.ch/user/l/lcorpe/www/MoCa/stability/$baseDir
+#WEBDIR=/afs/cern.ch/user/l/lcorpe/www/MoCa/stability/$baseDir
+WEBDIR=/afs/cern.ch/user/l/lcorpe/www/MoCa/validation/$baseDir
 mkdir -p $WEBDIR/slides
 mkdir -p $WEBDIR/stability
 cp ${outDirData}/img/stability/$xVar/*eps $WEBDIR/stability/.
 cd $WEBDIR/stability/.
 echo $PWD
-for i in *.eps ; do convert "$i" "${i%.*}.png" ; done
 for i in *.eps ; do convert "$i" "${i%.*}.pdf" ; done
+for i in *.pdf ; do convert "$i" "${i%.*}.png" ; done
 cp /afs/cern.ch/user/l/lcorpe/public/index.php .
 cd -
 
@@ -244,13 +259,13 @@ if [ -n "$SLIDES" ];then
     dirData=`dirname $dirData` # remove the selection subdir
     dirMC=`dirname $outDirMC` # remove the invariant mass subdir
     dirMC=`dirname $dirMC` # remove the selection subdir
-    for file in ${dirData}/${selection}/${invMass_var}/img/*.eps;
+    for file in ${dirData}/${selection}/${invMass_var}/img/*.pdf;
     do
 	echo "${file%????}.pdf" #remove four last characters ".eps" by ".pdf"
-	if [ ! -e "${file%????}.pdf" ];then
+	#if [ ! -e "${file%????}.png" ];then
 	    echo "processing Data $file" && convert "$file" "${file%.*}.png"
-	    echo "processing Data $file" && convert "$file" "${file%.*}.pdf"
-	fi;
+	   # echo "processing Data $file" && convert "$file" "${file%.*}.pdf"
+#	fi;
     done
    
     
@@ -259,6 +274,12 @@ if [ -n "$SLIDES" ];then
 		mkdir $baseDir/slides
 	
 	if [ $USER == "lcorpe" -o $USER == "lbrianza" ];then
+
+#WEBDIR=/afs/cern.ch/user/l/lcorpe/www/MoCa/stability/$baseDir
+WEBDIR=/afs/cern.ch/user/l/lcorpe/www/MoCa/validation/$baseDir
+mkdir -p $WEBDIR/slides
+mkdir -p $WEBDIR/stability
+
 	#for Louie and Luca, lazy: automatically replace variable names and compile latex...
 	cat $configFile | grep "s1 " | grep -v "#" >tmp/mc.txt
 	cat $configFile | grep d1 >tmp/data.txt
@@ -307,10 +328,38 @@ if [ -n "$SLIDES" ];then
    	rm tmp/tmp.tex
     pdflatex -interaction nonstopmode -file-line-error tmp/validation-${invMass_var}-slides.tex
     cp tmp/validation-${invMass_var}-*.tex $baseDir/slides/. 
+    cp tmp/validation-${invMass_var}-*.tex $WEBDIR/slides/. 
     cp validation-${invMass_var}-slides.pdf  $baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf
 		cp $baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf $WEBDIR/slides/.
+    
+		mkdir $WEBDIR/validation-fits/
+		cp  ${outDirData}/img/*{png,pdf} $WEBDIR/validation-fits/.
+		cp ~lcorpe/public/index.php $WEBDIR/validation-fits/.
+
+		cp ${outDirTable}/monitoring_summary-${invMass_var}-${selection}.tex $WEBDIR/slides/.
+
+		##compare vs reference colelction
+		mkdir $WEBDIR/comparison-vs-ref
+		./script/compareRereco.sh $REF/dato/$REF/${selection}/invMass_rawSC/table/monitoring_summary-invMass_rawSC-${selection}.tex  ${outDirTable}/monitoring_summary-${invMass_var}-${selection}.tex
+
+		cp comparison/comparison.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_$baseDir.tex
+		cp comparison.pdf $WEBDIR/comparison-vs-ref/comparison_rev_vs_$baseDir.pdf
+		cp $REF/dato/$REF/${selection}/invMass_rawSC/table/monitoring_summary-invMass_rawSC-${selection}.tex $WEBDIR/comparison-vs-ref/reference-table.tex
+		cp ${outDirTable}/monitoring_summary-${invMass_var}-${selection}.tex $WEBDIR/comparison-vs-ref/$baseDir-table.tex
+		cp comparison/slide3.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_deltaM.tex
+		cp comparison/slide5.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_deltaP.tex
+		cp comparison/slide6.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_sigmaCB.tex
+		cp comparison/slide8.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_resol.tex
+		cp comparison/slide10.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_addSmearing.tex
+		cp comparison/slide11.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_chi2.tex
+		cp comparison/slide15.tex $WEBDIR/comparison-vs-ref/comparison_rev_vs_sigmaEff.tex
+		cp comparison/slide2.tex $WEBDIR/comparison-vs-ref/comparison_nevents.tex
+
+		cp $WEBDIR/comparison-vs-ref/*tex $baseDir/slides/.
+
 		echo "$baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf"
-		echo "Slides at $WEBDIR/slides."
+		echo "Slides at $WEBDIR/slides/."
+		echo "on web at:  https://lcorpe.web.cern.ch/lcorpe/MoCa/validation/$baseDir"
 	fi
 		
 fi
