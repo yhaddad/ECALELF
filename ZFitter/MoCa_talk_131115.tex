@@ -84,17 +84,17 @@ breaklines=true
 \vspace{10mm}
 
 \begin{itemize}
-\item A number of developments to the way teh ntuples are produced and processed in ECALELF.
-\item Updated \textbf{selection} in the ZNtuple Dumper:
+\item A number of developments to the way the ntuples are produced and processed in ECALELF.
+\item Updated \textbf{pre-selection} and \textbf{selection} in the ZNtuple Dumper:
 \subitem Previously using Phys14, 50ns value of "loose".
 \subitem Now using latest available selections "loose25nsRun2","medium25nsRun2","tight25nsRun2"
 \subitem Caveat: currently not using $E/p$ cut or $H/E$ (FIXME: Luca, check?)
 \subitem "loose" selection we were using previously was tighter than new loose. 
-\item Updated \textbf{energy regression} using the mustache.
+\item Updated \textbf{energy regression} using the mustache SC.
 \subitem Caveat: do not yet have cpacity to produce the new regression energy for MC. So it is applied to data only.
 \item Studies for \textbf{fixed vs floating tails}. MC/data discrepancies in the tails meant we investigated using floating tails for the reference rereco, used this to fix tails for next rerecos.
 \item Updated \textbf{sigma effective} code to get finer binning (10 MeV vs 250 MeV)
-\subitem Use as crosscheck to $\sigma_{CB}/m_{Z}$
+\subitem Use as crosscheck to the combination of $\sigma_{CB}/m_{Z}$ and the tails of the CB
 \end{itemize}
 \end{frame}
 %%-----------------------------------------------------------------------------
@@ -103,13 +103,13 @@ breaklines=true
 \subsection{Updated Selection}
 \begin{frame}
 \frametitle{Updated Selection}
-\framesubtitle{Effect of Selection on Vars - Normalized}
+\framesubtitle{Effect of Selection on Vars - Normalized same area}
 
 \vspace{10mm}
 
 \begin{itemize}
 \item Checked effect of selections \textbf{loose25nsRun2, medium25nsRun2 and tight25nsRun2} on key ntuple branches.
-\item No large descepancies, all variables agree aside from slight differences in $\eta$. 
+\item No large descepancies, all variables agree aside from slight differences in $\eta$: different selection efficiency vs $\eta$
 \end{itemize}
   
 	\dualslide{
@@ -249,22 +249,22 @@ Further plots available here:	\href{https://lcorpe.web.cern.ch/lcorpe/MoCa/valid
     \emph{Reference Sample, run C+D -- Raw SC energy}
 \vspace{15mm}
 
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\resol$ &  $\resol$ &  $\resol$ \\ 
- &  loose &  medium &  tight \\ 
+\tiny \begin{tabular}{|l|c|c|c||c|c|c|} 
+\hline  
+ECAL Region &  \multicolumn{c|}{3}{$\resol$} & \multicolumn{c|}{3}{$\sigma_{eff}$} \\
+            &  loose &  medium &  tight   &  loose &  medium &  tight \\ 
 \hline     
-EB & $1.91 \pm 0.02$ & $1.90$ & $1.90$ \\
-EB $\abs{\eta} < 1$ & $1.73 \pm 0.01$ & $1.72$ & $1.73$ \\
-EB $\abs{\eta} > 1$ & $3.24 \pm 0.06$ & $3.18$ & $3.19$ \\
-EB $R9 < 0.94$ & $2.34 \pm 0.03$ & $2.36$ & $2.36$ \\
-EB $R9 > 0.94$ & $1.55 \pm 0.02$ & $1.55$ & $1.55$ \\
-\hline     
-\hline     
-EE & $5.08 \pm 0.06$ & $4.90$ & $4.85$ \\
-EE $\abs{\eta} < 2$ & $4.88 \pm 0.08$ & $4.85$ & $4.82$ \\
-EE $\abs{\eta} > 2$ & $4.49 \pm 0.05$ & $4.26$ & $4.22$ \\
-EE $R9 < 0.94$ & $5.89 \pm 0.07$ & $5.41$ & $5.35$ \\
-EE $R9 > 0.94$ & $3.47 \pm 0.05$ & $3.44$ & $3.40$ \\
+EB                  & $1.91 \pm 0.02$ & $1.90$ & $1.90$ & $4.06$ & $4.00$ & $3.96$ \\
+EB $\abs{\eta} < 1$ & $1.73 \pm 0.01$ & $1.72$ & $1.73$ & $3.48$ & $3.44$ & $3.38$ \\
+EB $\abs{\eta} > 1$ & $3.24 \pm 0.06$ & $3.18$ & $3.19$ & $4.62$ & $4.55$ & $4.51$ \\
+EB $R9 < 0.94$      & $2.34 \pm 0.03$ & $2.36$ & $2.36$ & $4.28$ & $4.24$ & $4.18$ \\
+EB $R9 > 0.94$      & $1.55 \pm 0.02$ & $1.55$ & $1.55$ & $3.21$ & $3.19$ & $3.15$ \\
+\hline
+EE                  & $5.08 \pm 0.06$ & $4.90$ & $4.85$ & $5.62$ & $5.46$ & $5.42$ \\
+EE $\abs{\eta} < 2$ & $4.88 \pm 0.08$ & $4.85$ & $4.82$ & $5.08$ & $5.01$ & $4.99$ \\
+EE $\abs{\eta} > 2$ & $4.49 \pm 0.05$ & $4.26$ & $4.22$ & $5.55$ & $5.25$ & $5.17$ \\
+EE $R9 < 0.94$      & $5.89 \pm 0.07$ & $5.41$ & $5.35$ & $5.75$ & $5.46$ & $5.41$ \\
+EE $R9 > 0.94$      & $3.47 \pm 0.05$ & $3.44$ & $3.40$ & $4.33$ & $4.26$ & $4.24$ \\
 \hline  
 \end{tabular} 
   \end{center}
@@ -272,37 +272,6 @@ EE $R9 > 0.94$ & $3.47 \pm 0.05$ & $3.44$ & $3.40$ \\
 
 \end{frame}
 %%-----------------------------------------------------------------------------
-\begin{frame}
-\frametitle{Updated Selection}
- \framesubtitle{$ \sigma_{eff} $ Comparison}
-\\
-  
-  \begin{center}
-    \emph{Reference Sample, run C+D -- Raw SC energy}
-\vspace{15mm}
-
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ \\ 
- &  loose &  medium &  tight \\ 
-\hline     
-EB & $4.06$ & $4.00$ & $3.96$ \\
-EB $\abs{\eta} < 1$ & $3.48$ & $3.44$ & $3.38$ \\
-EB $\abs{\eta} > 1$ & $4.62$ & $4.55$ & $4.51$ \\
-EB $R9 < 0.94$ & $4.28$ & $4.24$ & $4.18$ \\
-EB $R9 > 0.94$ & $3.21$ & $3.19$ & $3.15$ \\
-\hline     
-\hline     
-EE & $5.62$ & $5.46$ & $5.42$ \\
-EE $\abs{\eta} < 2$ & $5.08$ & $5.01$ & $4.99$ \\
-EE $\abs{\eta} > 2$ & $5.55$ & $5.25$ & $5.17$ \\
-EE $R9 < 0.94$ & $5.75$ & $5.46$ & $5.41$ \\
-EE $R9 > 0.94$ & $4.33$ & $4.26$ & $4.24$ \\
-\hline  
-\end{tabular} 
-  \end{center}
-
-
-\end{frame}
 %%-----------------------------------------------------------------------------
 \begin{frame}
 \frametitle{Updated Selection}
@@ -405,13 +374,21 @@ Further plots available here:	\href{https://lcorpe.web.cern.ch/lcorpe/MoCa/data-
 
 \vspace{10mm}
 
-\begin{itemize}
-\item \textbf{Datasets} Pulse Shapes: full Run D, phiSymmetry full Run C+D
-\item \textbf{JSON} Full RunC+D Gold+Silver Jsons.
-\item \textbf{selection}:  loose without E/p cut, $E_T \geq 25$ GeV
-\item \textbf{Tails}: Fixed to reference/prompt rereco floating tail fit. 
-\item \textbf{PU reweighting}: using number of reconstructed primary vertices
-\end{itemize}
+% \begin{itemize}
+% \item \textbf{Datasets} Pulse Shapes: full Run D, phiSymmetry full Run C+D
+% \item \textbf{JSON} Full RunC+D Gold+Silver Jsons.
+% \item \textbf{selection}:  loose without E/p cut, $E_T \geq 25$ GeV
+% \item \textbf{Tails}: Fixed to reference/prompt rereco floating tail fit. 
+% \item \textbf{PU reweighting}: using number of reconstructed primary vertices
+% \end{itemize}
+
+\begin{description}
+\item [Datasets:] Pulse Shapes: full Run D, phiSymmetry full Run C+D 
+\item [JSON:] Full RunC+D Gold+Silver Jsons.
+\item [selection:]  loose without E/p cut, $E_T > 25$ GeV
+\item [Tails:] Fixed to reference/prompt rereco floating tail fit. 
+\item [PU reweighting:] using number of reconstructed primary vertices
+\end{description}
   
 \dualslide{
 before reweighting
