@@ -437,6 +437,9 @@ after reweighting
 \end{frame}
 %%-----------------------------------------------------------------------------
 
+\newcommand{\hlcell}{\cellcolor{green!30!white}}
+\newcommand{\hlcellblue}{\cellcolor{red!30!white}}
+
 
 \begin{frame}
  % \frametitle{\dataSample}
@@ -448,25 +451,29 @@ after reweighting
 
   %  \bl
   %   $\Delta m$: shift of the peak position of the CB
-
+\begin{itemize}
+  \item mustache SC with regression
+  \item rerecoes: Cal\_Nov2015\_PS\_v*
+  \end{itemize}
   
   \begin{center}
     \emph{\dataSample}\xspace \invMassVarName
 
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ \\ 
- &  ref 111115 silver must-runD &  Cal Nov2015 PS v1 silver &  Cal Nov2015 PS v2 silver &  Cal Nov2015 PS v3 silver &  Cal Nov2015 PS v4 silver &  Cal Nov2015 PS v5 silver \\ 
+\tiny \begin{tabular}{|l|c|c|c|c|c|c|} \hline  
+ECAL Region & \multicolumn{6}{c|}{$\resol$} \\
+            & ref  & C v1  & v2  &  v3  &  v4  &  v5  \\ 
 \hline           
-EB & $1.73 \pm 0.01$ & $1.73$ & $1.73$ & $1.75$ & $1.74$ & $1.75$ \\
+EB                  & $1.73 \pm 0.01$ & $1.73$ & $1.73$ & \hlcellblue $1.75$ & $1.74$ & $1.75$ \\
 EB $\abs{\eta} < 1$ & $1.53 \pm 0.01$ & $1.51$ & $1.52$ & $1.54$ & $1.53$ & $1.54$ \\
-EB $\abs{\eta} > 1$ & $2.66 \pm 0.03$ & $2.48$ & $2.48$ & $2.50$ & $2.48$ & $2.50$ \\
-EB $R9 < 0.94$ & $2.06 \pm 0.01$ & $2.02$ & $2.02$ & $2.03$ & $2.02$ & $2.03$ \\
-EB $R9 > 0.94$ & $1.45 \pm 0.01$ & $1.40$ & $1.41$ & $1.44$ & $1.43$ & $1.44$ \\
-EE & $3.20 \pm 0.02$ & $3.09$ & $3.08$ & $3.08$ & $3.09$ & $3.16$ \\
-EE $\abs{\eta} < 2$ & $3.08 \pm 0.04$ & $3.05$ & $3.06$ & $3.04$ & $3.05$ & $3.09$ \\
-EE $\abs{\eta} > 2$ & $3.38 \pm 0.04$ & $3.00$ & $2.99$ & $2.98$ & $3.00$ & $3.12$ \\
-EE $R9 < 0.94$ & $3.95 \pm 0.04$ & $3.58$ & $3.58$ & $3.57$ & $3.58$ & $3.60$ \\
-EE $R9 > 0.94$ & $2.55 \pm 0.03$ & $2.59$ & $2.58$ & $2.59$ & $2.61$ & $2.68$ \\
+EB $\abs{\eta} > 1$ & $2.66 \pm 0.03$ & \hlcell $2.48$ & \hlcell $2.48$ & \hlcellblue $2.50$ & \hlcell $2.48$ & $2.50$ \\
+EB $R9 < 0.94$      & $2.06 \pm 0.01$ & $2.02$ & $2.02$ & $2.03$ & $2.02$ & $2.03$ \\
+EB $R9 > 0.94$      & $1.45 \pm 0.01$ & \hlcell $1.40$ & \hlcell $1.41$ & \hlcellblue $1.44$ & $1.43$ & $1.44$ \\
+\hline
+EE                  & $3.20 \pm 0.02$ & $3.09$ & $3.08$ & \hlcell $3.08$ & $3.09$ & $3.16$ \\
+EE $\abs{\eta} < 2$ & $3.08 \pm 0.04$ & $3.05$ & $3.06$ & \hlcell $3.04$ & $3.05$ & $3.09$ \\
+EE $\abs{\eta} > 2$ & $3.38 \pm 0.04$ & $3.00$ & $2.99$ & \hlcell $2.98$ & $3.00$ & $3.12$ \\
+EE $R9 < 0.94$      & $3.95 \pm 0.04$ & $3.58$ & $3.58$ & \hlcell $3.57$ & $3.58$ & $3.60$ \\
+EE $R9 > 0.94$      & $2.55 \pm 0.03$ & $2.59$ & $2.58$ & \hlcell $2.59$ & $2.61$ & $2.68$ \\
 \hline  
 \end{tabular} 
   \end{center}
@@ -500,21 +507,21 @@ EE $R9 > 0.94$ & $2.55 \pm 0.03$ & $2.59$ & $2.58$ & $2.59$ & $2.61$ & $2.68$ \\
   
   \begin{center}
     \emph{\dataSample}\xspace \invMassVarName
-
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ \\ 
- &  ref 111115 silver must-runD &  Cal Nov2015 PS v1 silver &  Cal Nov2015 PS v2 silver &  Cal Nov2015 PS v3 silver &  Cal Nov2015 PS v4 silver &  Cal Nov2015 PS v5 silver \\ 
+\tiny \begin{tabular}{|l|c|c|c|c|c|c|} \hline  
+ECAL Region & \multicolumn{6}{c|}{$\sigma_{eff}$} \\
+            & ref  & C v1  & v2  &  v3  &  v4  &  v5  \\ 
 \hline           
-EB & $3.45$ & $3.45$ & $3.45$ & $3.46$ & $3.45$ & $3.46$ \\
+EB                  & $3.45$ & $3.45$ & $3.45$ & $3.46$ & $3.45$ & $3.46$ \\
 EB $\abs{\eta} < 1$ & $3.23$ & $3.24$ & $3.23$ & $3.25$ & $3.24$ & $3.25$ \\
 EB $\abs{\eta} > 1$ & $3.92$ & $3.92$ & $3.91$ & $3.92$ & $3.91$ & $3.92$ \\
-EB $R9 < 0.94$ & $3.67$ & $3.67$ & $3.67$ & $3.67$ & $3.67$ & $3.67$ \\
-EB $R9 > 0.94$ & $3.06$ & $3.07$ & $3.07$ & $3.08$ & $3.08$ & $3.08$ \\
-EE & $4.57$ & $4.58$ & $4.56$ & $4.57$ & $4.58$ & $4.57$ \\
+EB $R9 < 0.94$      & $3.67$ & $3.67$ & $3.67$ & $3.67$ & $3.67$ & $3.67$ \\
+EB $R9 > 0.94$      & $3.06$ & $3.07$ & $3.07$ & $3.08$ & $3.08$ & $3.08$ \\
+\hline
+EE                  & $4.57$ & $4.58$ & $4.56$ & $4.57$ & $4.58$ & $4.57$ \\
 EE $\abs{\eta} < 2$ & $4.33$ & $4.33$ & $4.33$ & $4.33$ & $4.34$ & $4.33$ \\
 EE $\abs{\eta} > 2$ & $5.01$ & $5.01$ & $4.98$ & $4.98$ & $5.00$ & $4.97$ \\
-EE $R9 < 0.94$ & $5.29$ & $5.28$ & $5.29$ & $5.29$ & $5.29$ & $5.23$ \\
-EE $R9 > 0.94$ & $3.88$ & $3.88$ & $3.87$ & $3.88$ & $3.88$ & $3.90$ \\
+EE $R9 < 0.94$      & $5.29$ & $5.28$ & $5.29$ & $5.29$ & $5.29$ & $5.23$ \\
+EE $R9 > 0.94$      & $3.88$ & $3.88$ & $3.87$ & $3.88$ & $3.88$ & $3.90$ \\
 \hline  
 \end{tabular} 
   \end{center}
@@ -549,20 +556,22 @@ EE $R9 > 0.94$ & $3.88$ & $3.88$ & $3.87$ & $3.88$ & $3.88$ & $3.90$ \\
   \begin{center}
     \emph{\dataSample}\xspace \invMassVarName
 
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ \\ 
- &  ref 111115 silver must-runD &  Cal Nov2015 PS v1 silver &  Cal Nov2015 PS v2 silver &  Cal Nov2015 PS v3 silver &  Cal Nov2015 PS v4 silver &  Cal Nov2015 PS v5 silver \\ 
+
+\tiny \begin{tabular}{|l|c|c|c|c|c|c|} \hline  
+ECAL Region & \multicolumn{6}{c|}{$\Delta m}$} \\
+            & ref  & C v1  & v2  &  v3  &  v4  &  v5  \\ 
 \hline           
-EB & $-0.39 \pm 0.00$ & $-0.49$ & $-0.71$ & $-0.79$ & $-0.80$ & $-0.79$ \\
+EB                  & $-0.39 \pm 0.00$ & $-0.49$ & $-0.71$ & $-0.79$ & $-0.80$ & $-0.79$ \\
 EB $\abs{\eta} < 1$ & $-0.28 \pm 0.01$ & $-0.36$ & $-0.58$ & $-0.67$ & $-0.68$ & $-0.67$ \\
 EB $\abs{\eta} > 1$ & $-1.22 \pm 0.02$ & $-1.17$ & $-1.40$ & $-1.49$ & $-1.47$ & $-1.49$ \\
-EB $R9 < 0.94$ & $-0.77 \pm 0.01$ & $-0.85$ & $-1.07$ & $-1.16$ & $-1.14$ & $-1.16$ \\
-EB $R9 > 0.94$ & $-0.10 \pm 0.01$ & $-0.16$ & $-0.37$ & $-0.46$ & $-0.49$ & $-0.46$ \\
-EE & $-0.68 \pm 0.01$ & $-0.46$ & $-0.64$ & $-0.52$ & $-0.56$ & $-1.61$ \\
+EB $R9 < 0.94$      & $-0.77 \pm 0.01$ & $-0.85$ & $-1.07$ & $-1.16$ & $-1.14$ & $-1.16$ \\
+EB $R9 > 0.94$      & $-0.10 \pm 0.01$ & $-0.16$ & $-0.37$ & $-0.46$ & $-0.49$ & $-0.46$ \\
+\hline
+EE                  & $-0.68 \pm 0.01$ & $-0.46$ & $-0.64$ & $-0.52$ & $-0.56$ & $-1.61$ \\
 EE $\abs{\eta} < 2$ & $-0.69 \pm 0.03$ & $-0.42$ & $-0.59$ & $-0.46$ & $-0.51$ & $-1.30$ \\
 EE $\abs{\eta} > 2$ & $-0.65 \pm 0.03$ & $-0.36$ & $-0.54$ & $-0.44$ & $-0.48$ & $-1.77$ \\
-EE $R9 < 0.94$ & $-1.12 \pm 0.03$ & $-0.71$ & $-0.92$ & $-0.79$ & $-0.82$ & $-1.65$ \\
-EE $R9 > 0.94$ & $-0.35 \pm 0.03$ & $-0.24$ & $-0.39$ & $-0.30$ & $-0.35$ & $-1.61$ \\
+EE $R9 < 0.94$      & $-1.12 \pm 0.03$ & $-0.71$ & $-0.92$ & $-0.79$ & $-0.82$ & $-1.65$ \\
+EE $R9 > 0.94$      & $-0.35 \pm 0.03$ & $-0.24$ & $-0.39$ & $-0.30$ & $-0.35$ & $-1.61$ \\
 \hline  
 \end{tabular} 
   \end{center}
@@ -602,26 +611,31 @@ Set of \rereco{phiSym_materialCorrection_} rerecoes:
 
   %  \bl
   %   $\Delta m$: shift of the peak position of the CB
+\begin{itemize}
+  \item mustache SC with regression
+  \item rerecoes: phiSym\_materialCorrection\_v*
+  \end{itemize}
 
   
   \begin{center}
     \emph{\dataSample}\xspace \invMassVarName
 
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ &  $\resol$ \\ 
- &  ref 111115 silver must &  phiSym materialCorrection v1 silver &  phiSym materialCorrection v2 silver &  phiSym materialCorrection v4 silver &  phiSym materialCorrection v6 silver &  phiSym materialCorrection v7 silver &  phiSym materialCorrection v8 silver &  phiSym materialCorrection v9 silver &  phiSym materialCorrection v10 silver \\ 
-\hline                 
-EB & $1.73 \pm 0.01$ & $1.85$ & $1.75$ & $1.70$ & $1.82$ & $1.69$ & $1.88$ & $1.82$ & $1.69$ \\
+\tiny \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|} \hline  
+ECAL Region & \multicolumn{6}{c|}{$\resol$} \\
+            & ref  &  v1  & v2  &  v4  &  v5  & v6 & v7 & v8 & v9 & v10\\ 
+\hline           
+EB                  & $1.73 \pm 0.01$ & $1.85$ & $1.75$ & $1.70$ & $1.82$ & $1.69$ & $1.88$ & $1.82$ & $1.69$ \\
 EB $\abs{\eta} < 1$ & $1.53 \pm 0.01$ & $1.61$ & $1.48$ & $1.46$ & $1.57$ & $1.45$ & $1.65$ & $1.57$ & $1.45$ \\
 EB $\abs{\eta} > 1$ & $2.66 \pm 0.03$ & $2.72$ & $2.70$ & $2.49$ & $2.74$ & $2.46$ & $2.80$ & $2.74$ & $2.46$ \\
-EB $R9 < 0.94$ & $2.06 \pm 0.01$ & $2.14$ & $2.08$ & $2.00$ & $2.13$ & $1.99$ & $2.18$ & $2.13$ & $1.99$ \\
-EB $R9 > 0.94$ & $1.45 \pm 0.01$ & $1.54$ & $1.40$ & $1.35$ & $1.49$ & $1.34$ & $1.58$ & $1.49$ & $1.34$ \\
-EE & $3.20 \pm 0.02$ & $4.18$ & $4.41$ & $4.62$ & $3.70$ & $3.23$ & $3.68$ & $3.60$ & $3.20$ \\
+EB $R9 < 0.94$      & $2.06 \pm 0.01$ & $2.14$ & $2.08$ & $2.00$ & $2.13$ & $1.99$ & $2.18$ & $2.13$ & $1.99$ \\
+EB $R9 > 0.94$      & $1.45 \pm 0.01$ & $1.54$ & $1.40$ & $1.35$ & $1.49$ & $1.34$ & $1.58$ & $1.49$ & $1.34$ \\
+\hline
+EE                  & $3.20 \pm 0.02$ & $4.18$ & $4.41$ & $4.62$ & $3.70$ & $3.23$ & $3.68$ & $3.60$ & $3.20$ \\
 EE $\abs{\eta} < 2$ & $3.08 \pm 0.04$ & $3.99$ & $4.14$ & $3.78$ & $3.90$ & $3.20$ & $3.73$ & $3.78$ & $3.18$ \\
 EE $\abs{\eta} > 2$ & $3.38 \pm 0.04$ & $4.28$ & $4.60$ & $5.38$ & $3.45$ & $3.15$ & $3.58$ & $3.38$ & $3.09$ \\
-EE $R9 < 0.94$ & $3.95 \pm 0.04$ & $4.49$ & $4.69$ & $4.67$ & $4.23$ & $3.74$ & $4.15$ & $4.13$ & $3.70$ \\
-EE $R9 > 0.94$ & $2.55 \pm 0.03$ & $3.87$ & $4.03$ & $4.49$ & $3.16$ & $2.73$ & $3.18$ & $3.07$ & $2.69$ \\
-\hline  
+EE $R9 < 0.94$      & $3.95 \pm 0.04$ & $4.49$ & $4.69$ & $4.67$ & $4.23$ & $3.74$ & $4.15$ & $4.13$ & $3.70$ \\
+EE $R9 > 0.94$      & $2.55 \pm 0.03$ & $3.87$ & $4.03$ & $4.49$ & $3.16$ & $2.73$ & $3.18$ & $3.07$ & $2.69$ \\
+        \hline  
 \end{tabular} 
   \end{center}
 
@@ -643,20 +657,21 @@ EE $R9 > 0.94$ & $2.55 \pm 0.03$ & $3.87$ & $4.03$ & $4.49$ & $3.16$ & $2.73$ & 
   \begin{center}
     \emph{\dataSample}\xspace \invMassVarName
 
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ &  $\sigma {eff}$ \\ 
- &  ref 111115 silver must &  phiSym materialCorrection v1 silver &  phiSym materialCorrection v2 silver &  phiSym materialCorrection v4 silver &  phiSym materialCorrection v6 silver &  phiSym materialCorrection v7 silver &  phiSym materialCorrection v8 silver &  phiSym materialCorrection v9 silver &  phiSym materialCorrection v10 silver \\ 
-\hline                 
-EB & $3.45$ & $3.56$ & $3.49$ & $3.44$ & $3.52$ & $3.42$ & $3.58$ & $3.52$ & $3.42$ \\
+\tiny \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|} \hline  
+ECAL Region & \multicolumn{6}{c|}{$\sigma_{eff}$} \\
+            & ref  &  v1  & v2  &  v4  &  v5  & v6 & v7 & v8 & v9 & v10\\ 
+\hline           
+EB                  & $3.45$ & $3.56$ & $3.49$ & $3.44$ & $3.52$ & $3.42$ & $3.58$ & $3.52$ & $3.42$ \\
 EB $\abs{\eta} < 1$ & $3.23$ & $3.33$ & $3.23$ & $3.21$ & $3.27$ & $3.19$ & $3.35$ & $3.27$ & $3.19$ \\
 EB $\abs{\eta} > 1$ & $3.93$ & $4.13$ & $4.15$ & $3.96$ & $4.16$ & $3.92$ & $4.23$ & $4.16$ & $3.92$ \\
-EB $R9 < 0.94$ & $3.67$ & $3.79$ & $3.74$ & $3.67$ & $3.77$ & $3.65$ & $3.82$ & $3.77$ & $3.65$ \\
-EB $R9 > 0.94$ & $3.06$ & $3.17$ & $3.08$ & $3.04$ & $3.12$ & $3.01$ & $3.20$ & $3.12$ & $3.01$ \\
-EE & $4.57$ & $5.37$ & $5.57$ & $5.69$ & $5.08$ & $4.67$ & $5.08$ & $5.03$ & $4.66$ \\
+EB $R9 < 0.94$      & $3.67$ & $3.79$ & $3.74$ & $3.67$ & $3.77$ & $3.65$ & $3.82$ & $3.77$ & $3.65$ \\
+EB $R9 > 0.94$      & $3.06$ & $3.17$ & $3.08$ & $3.04$ & $3.12$ & $3.01$ & $3.20$ & $3.12$ & $3.01$ \\
+\hline
+EE                  & $4.57$ & $5.37$ & $5.57$ & $5.69$ & $5.08$ & $4.67$ & $5.08$ & $5.03$ & $4.66$ \\
 EE $\abs{\eta} < 2$ & $4.33$ & $5.10$ & $5.26$ & $4.94$ & $5.07$ & $4.45$ & $4.94$ & $5.00$ & $4.44$ \\
 EE $\abs{\eta} > 2$ & $5.01$ & $5.78$ & $6.06$ & $6.57$ & $5.29$ & $5.08$ & $5.39$ & $5.25$ & $5.05$ \\
-EE $R9 < 0.94$ & $5.28$ & $5.96$ & $6.17$ & $6.03$ & $5.93$ & $5.42$ & $5.88$ & $5.88$ & $5.39$ \\
-EE $R9 > 0.94$ & $3.88$ & $4.81$ & $5.01$ & $5.38$ & $4.32$ & $3.96$ & $4.36$ & $4.27$ & $3.94$ \\
+EE $R9 < 0.94$      & $5.28$ & $5.96$ & $6.17$ & $6.03$ & $5.93$ & $5.42$ & $5.88$ & $5.88$ & $5.39$ \\
+EE $R9 > 0.94$      & $3.88$ & $4.81$ & $5.01$ & $5.38$ & $4.32$ & $3.96$ & $4.36$ & $4.27$ & $3.94$ \\
 \hline  
 \end{tabular} 
   \end{center}
@@ -673,20 +688,21 @@ EE $R9 > 0.94$ & $3.88$ & $4.81$ & $5.01$ & $5.38$ & $4.32$ & $3.96$ & $4.36$ & 
   \begin{center}
     \emph{\dataSample}\xspace \invMassVarName
 
-\tiny \begin{tabular}{|l|p{30pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|p{18pt}|} \hline  
-ECAL Region &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ &  $\Delta m$ \\ 
- &  ref 111115 silver must &  phiSym materialCorrection v1 silver &  phiSym materialCorrection v2 silver &  phiSym materialCorrection v4 silver &  phiSym materialCorrection v6 silver &  phiSym materialCorrection v7 silver &  phiSym materialCorrection v8 silver &  phiSym materialCorrection v9 silver &  phiSym materialCorrection v10 silver \\ 
-\hline                 
-EB & $3.45$ & $3.56$ & $3.49$ & $3.44$ & $3.52$ & $3.42$ & $3.58$ & $3.52$ & $3.42$ \\
+\tiny \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|} \hline  
+ECAL Region & \multicolumn{6}{c|}{$\Delta m$} \\
+            & ref  &  v1  & v2  &  v4  &  v5  & v6 & v7 & v8 & v9 & v10\\ 
+\hline           
+EB                  & $3.45$ & $3.56$ & $3.49$ & $3.44$ & $3.52$ & $3.42$ & $3.58$ & $3.52$ & $3.42$ \\
 EB $\abs{\eta} < 1$ & $3.23$ & $3.33$ & $3.23$ & $3.21$ & $3.27$ & $3.19$ & $3.35$ & $3.27$ & $3.19$ \\
 EB $\abs{\eta} > 1$ & $3.93$ & $4.13$ & $4.15$ & $3.96$ & $4.16$ & $3.92$ & $4.23$ & $4.16$ & $3.92$ \\
-EB $R9 < 0.94$ & $3.67$ & $3.79$ & $3.74$ & $3.67$ & $3.77$ & $3.65$ & $3.82$ & $3.77$ & $3.65$ \\
-EB $R9 > 0.94$ & $3.06$ & $3.17$ & $3.08$ & $3.04$ & $3.12$ & $3.01$ & $3.20$ & $3.12$ & $3.01$ \\
-EE & $4.57$ & $5.37$ & $5.57$ & $5.69$ & $5.08$ & $4.67$ & $5.08$ & $5.03$ & $4.66$ \\
+EB $R9 < 0.94$      & $3.67$ & $3.79$ & $3.74$ & $3.67$ & $3.77$ & $3.65$ & $3.82$ & $3.77$ & $3.65$ \\
+EB $R9 > 0.94$      & $3.06$ & $3.17$ & $3.08$ & $3.04$ & $3.12$ & $3.01$ & $3.20$ & $3.12$ & $3.01$ \\
+\hline
+EE                  & $4.57$ & $5.37$ & $5.57$ & $5.69$ & $5.08$ & $4.67$ & $5.08$ & $5.03$ & $4.66$ \\
 EE $\abs{\eta} < 2$ & $4.33$ & $5.10$ & $5.26$ & $4.94$ & $5.07$ & $4.45$ & $4.94$ & $5.00$ & $4.44$ \\
 EE $\abs{\eta} > 2$ & $5.01$ & $5.78$ & $6.06$ & $6.57$ & $5.29$ & $5.08$ & $5.39$ & $5.25$ & $5.05$ \\
-EE $R9 < 0.94$ & $5.28$ & $5.96$ & $6.17$ & $6.03$ & $5.93$ & $5.42$ & $5.88$ & $5.88$ & $5.39$ \\
-EE $R9 > 0.94$ & $3.88$ & $4.81$ & $5.01$ & $5.38$ & $4.32$ & $3.96$ & $4.36$ & $4.27$ & $3.94$ \\
+EE $R9 < 0.94$      & $5.28$ & $5.96$ & $6.17$ & $6.03$ & $5.93$ & $5.42$ & $5.88$ & $5.88$ & $5.39$ \\
+EE $R9 > 0.94$      & $3.88$ & $4.81$ & $5.01$ & $5.38$ & $4.32$ & $3.96$ & $4.36$ & $4.27$ & $3.94$ \\
 \hline  
 \end{tabular}
 \end{center}
