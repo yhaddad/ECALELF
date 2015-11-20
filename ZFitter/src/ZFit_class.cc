@@ -60,6 +60,7 @@ ZFit_class::ZFit_class(TChain *data_chain_,
   bkg_chain(bkg_chain_),
 
   invMass(invMass_VarName, "Mee", invMass_min, invMass_max,"GeV/c^{2}"),
+	invMass_highBinning(NULL),
   convBwCbPdf(invMass),
   cruijffPdf(invMass),
 
@@ -488,9 +489,12 @@ void ZFit_class::SetFitPar(RooFitResult *fitres_MC){
 
 //get effective sigma
 double ZFit_class::GetEffectiveSigma(RooAbsData *dataset, float quant=0.68){
-
+	std::cout << "DEBUG 3.1" << std::endl;
+	std::cout << "DEBUG 3.1 dataset" << dataset <<  std::endl;
+	if (dataset) std::cout << "DEBUG 3.1i bis dataset " << *dataset <<  std::endl;
 	// it's up to the function that calls GetEffectiveSigma to delete the stored histogram
-	if(invMass_highBinning==NULL) invMass_highBinning = dataset->createHistogram(invMass.GetName(),invMass.getBins("plotRange"));
+	if(invMass_highBinning==NULL) invMass_highBinning = dataset->createHistogram(invMass.GetName(),6000);
+	// invMass_highBinning = dataset->createHistogram(invMass.GetName(),invMass.getBins("plotRange"));
 	TH1* h = invMass_highBinning;
 
   double TotEvents = h->Integral(1, h->GetNbinsX()-1);
@@ -617,6 +621,7 @@ RooFitResult *ZFit_class::FitData(TString region, bool doPlot, RooFitResult *fit
 
   //EFFECTIVE SIGMA
   sigmaeff_data = GetEffectiveSigma(data_red);
+	std::cout << "DEBUG 1" << std::endl;
   //overwriting values
   sigmaeff_data_map[0.68]=GetEffectiveSigma(data_red);
   sigmaeff_data_map[0.50]=GetEffectiveSigma(data_red, 0.50);
@@ -648,6 +653,7 @@ RooFitResult *ZFit_class::FitData(TString region, bool doPlot, RooFitResult *fit
   }
   delete data_red;
   delete invMass_highBinning;
+	invMass_highBinning=NULL;
   return fitres_data;
 }
 
@@ -693,6 +699,7 @@ RooFitResult *ZFit_class::FitMC(TString region, bool doPlot){
   
   delete signal_red; // delete the reduced dataset
   delete invMass_highBinning;
+	invMass_highBinning=NULL;
   return fitres_MC;
 }
 
@@ -755,8 +762,15 @@ void ZFit_class::Fit(TString region, bool doPlot){
     // take the fit result from the file
     std::cout << "[INFO] Fit results for MC taken from file:" << fitResMCFileName << std::endl;
     TFile fitResMCFile(fitResMCFileName,"OPEN");
+		if (((RooFitResult *)fitResMCFile.Get("data"))){
     fitres_MC = (RooFitResult *) ((RooFitResult *)fitResMCFile.Get("data"))->Clone("MC_fitres");
-    //fitres_MC = (RooFitResult *) ((RooFitResult *)fitResMCFile.Get("MC"))->Clone("MC_fitres");
+		}
+		else if((RooFitResult *)fitResMCFile.Get("MC")){
+		fitres_MC = (RooFitResult *) ((RooFitResult *)fitResMCFile.Get("MC"))->Clone("MC_fitres");
+		}
+		else {
+		std::cout << "ERROR specified fit res directory contains no fitres. exit " ; exit(1); 
+		}
     fitResMCFile.Close();
     fitres_MC->Print();
 
