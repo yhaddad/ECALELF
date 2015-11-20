@@ -396,7 +396,7 @@ RooAbsData *ZFit_class::ReduceDataset(TChain *data, TString region, bool isMC, b
 
   std::cout << "------------------------------" << std::endl;
   
-  
+ 	 
   return reduced;
   
 }
@@ -489,36 +489,55 @@ void ZFit_class::SetFitPar(RooFitResult *fitres_MC){
 //get effective sigma
 double ZFit_class::GetEffectiveSigma(RooAbsData *dataset){
 
-  TH1* h = dataset->createHistogram(invMass.GetName(),invMass.getBins("plotRange"));
+ // TH1* h = dataset->createHistogram(invMass.GetName(),invMass.getBins("plotRange"));
+	TH1* h = dataset->createHistogram(invMass.GetName(),5000); //200*25=5000 bins = 0.01 GeV/bin
 
   double TotEvents = h->Integral(1, h->GetNbinsX()-1);
-  float LocEvents = 0.;
+  double LocEvents = 0.;
   int binI = h->FindBin(h->GetMean());
   int binF = h->GetNbinsX()-1;
-  bool keepGoing = false;
+ // bool keepGoing = false;
+	#ifdef DEBUG
+	  double frac = 0.;
+	#endif
   for(int jBin=binI; jBin>0; --jBin){
     LocEvents = 0.;
-    keepGoing = false;
+   // keepGoing = false;
+	  #ifdef DEBUG
+	      std::cout<<"j: "<<h->GetBinCenter(jBin)<<" I: "<<h->GetBinCenter(binI)<<" F: "<<h->GetBinCenter(binF)<<" frac: "<<frac<<std::endl;
+	  #endif
     for(int iBin=jBin; iBin<binF; ++iBin){
       LocEvents += h->GetBinContent(iBin);
       if(LocEvents/TotEvents >= 0.68) {
 	if(iBin-jBin < binF-binI) {
 	  binF = iBin;
 	  binI = jBin;
-	  keepGoing = true;
+	//  keepGoing = true;
 	}
 	break;
       }
       if(iBin == binF-1 && binF == h->GetNbinsX()-1){
-	keepGoing = true;
+	//keepGoing = true;
+	#ifdef DEBUG
+		  frac = LocEvents/TotEvents;
+		  std::cout<<"trovato nuovo intervallo piu piccolo di prima"<<std::endl;
+	#endif
 	--binI;
       }
-      if(iBin == binF-1 && binF != h->GetNbinsX()-1) break;
+  //    if(iBin == binF-1 && binF != h->GetNbinsX()-1) break;
+	      if(iBin == binF-1 && binF != h->GetNbinsX()-1) {
+	#ifdef DEBUG
+		std::cout<<"qui: esci" <<std::endl; 
+	#endif
+		//	keepGoing=true; 
+		break; 
+	      }
     }
-    if(keepGoing == false) break;
+   // if(keepGoing == false) break;
   }
-  float sigma = (h->GetBinCenter(binF) - h->GetBinCenter(binI))/2.;
-  std::cout << " >>> effective sigma: " << sigma << std::endl;
+  double sigma = (h->GetBinCenter(binF) - h->GetBinCenter(binI))/2.;
+  //std::cout << " >>> effective sigma: " << sigma << std::endl;
+	std::cout << ">>> - effective sigma: " << sigma << " interval start from: "<<h->GetBinCenter(binI)<<" finish to: "<<h->GetBinCenter(binF)<<std::endl;
   return sigma;
 }
 
@@ -579,24 +598,32 @@ void ZFit_class::Fit(TH1F *hist, bool isMC){
 
 
 
+	if (plot_data) plot_data->SaveAs("test-1.root");
   PlotFit(data_red, isMC);
+	if (plot_data) plot_data->SaveAs("test3.root");
   return;
 }
 
 
 RooFitResult *ZFit_class::FitData(TString region, bool doPlot, RooFitResult *fitres_MC){
-  RooAbsData *data_red   = ReduceDataset(data, region, false, _isDataUnbinned);
+	RooAbsData *data_red   = ReduceDataset(data, region, false, _isDataUnbinned);
   nEvents_region_data=data_red->sumEntries();
   if(nEvents_region_data < 100){
-    data_red   = ReduceDataset(data, region, false, _isDataUnbinned);
-    nEvents_region_data=data_red->sumEntries();
+    data_red   = ReduceDataset(data, region, false, true);
+ //   nEvents_region_data=data_red->sumEntries();
   }
-  if(nEvents_region_data < 100) return NULL;
+ // if(nEvents_region_data < 100) return NULL;
   int numcpu=4;
-  if(_isDataUnbinned) numcpu=1;
+  if(_isDataUnbinned) numcpu=1;//this is because in previous versions of ROOT, the unbinned fit did not support nCPU>1 (to be checked in newer versions)
 
   //EFFECTIVE SIGMA
-  sigmaeff_data = GetEffectiveSigma(data_red);
+ // sigmaeff_data = GetEffectiveSigma(data_red);
+	  if (_isDataUnbinned)
+	    sigmaeff_data = GetEffectiveSigma(data_red);
+	  else { //if data_red is binned, need to re-do it unbinned, in order to get an accurate effective sigma
+	    RooAbsData *data_red_unbinned   = ReduceDataset(data, region, false, true);
+	    sigmaeff_data = GetEffectiveSigma(data_red_unbinned);
+	  }
 
   SetFitPar(fitres_MC);
   RooFitResult *fitres_data = model_pdf->fitTo(*data_red,RooFit::Save(), //RooFit::Range(range.c_str()), 
@@ -615,9 +642,11 @@ RooFitResult *ZFit_class::FitData(TString region, bool doPlot, RooFitResult *fit
   SetFitPar(fitres_data);
   
   // add the rescaled width map 
-  
+ 	 
   if(doPlot){
+	 if (plot_data)  plot_data->SaveAs("test-1a.root");
     PlotFit(data_red,false);
+	if (plot_data)   plot_data->SaveAs("test3a.root");
     plot_data->Print();
     //chi2_data = (model_pdf->createChi2(*data_red))->getValue();
     chi2_data = plot_data->chiSquare();//invMass.getBins("plotRange")-fitres_data->floatParsFinal().getSize());
@@ -725,7 +754,8 @@ void ZFit_class::Fit(TString region, bool doPlot){
     // take the fit result from the file
     std::cout << "[INFO] Fit results for MC taken from file:" << fitResMCFileName << std::endl;
     TFile fitResMCFile(fitResMCFileName,"OPEN");
-    fitres_MC = (RooFitResult *) ((RooFitResult *)fitResMCFile.Get("MC"))->Clone("MC_fitres");
+    fitres_MC = (RooFitResult *) ((RooFitResult *)fitResMCFile.Get("data"))->Clone("MC_fitres");
+    //fitres_MC = (RooFitResult *) ((RooFitResult *)fitResMCFile.Get("MC"))->Clone("MC_fitres");
     fitResMCFile.Close();
     fitres_MC->Print();
 
@@ -738,7 +768,9 @@ void ZFit_class::Fit(TString region, bool doPlot){
       fitres_data->SetName("data");
       params->writeToFile(paramsDataFileName);		
       SaveFitRes(fitres_data,fitResDataFileName, chi2_data, nEvents_region_data, sigmaeff_data); // isMC=false
+	   if (plot_data)  plot_data->SaveAs("test4.root");
       if(doPlot) SaveFitPlot(plotDataFileName,false);
+	   if (plot_data)  plot_data->SaveAs("test5.root");
       delete fitres_data;
     }else {
       if(nEvents_region_data < 100){
@@ -959,8 +991,11 @@ void ZFit_class::PlotFit(RooAbsData *data_red, bool isMC){
 			      RooFit::Title(""), 
 			      RooFit::Name("data_plot"));
 
+		if (plot_data) plot_data->SaveAs("test0.root");
     data_red->plotOn(plot_data, RooFit::Binning("plotRange"));
+		if (plot_data) plot_data->SaveAs("test1.root");
     model_pdf->plotOn(plot_data, RooFit::LineColor(kBlue));
+		if (plot_data) plot_data->SaveAs("test2.root");
     //  model_pdf->plotOn(plot_data, RooFit::LineColor(kRed), RooFit::Components(bkg),RooFit::LineStyle(kDashed));
     model_pdf->paramOn(plot_data,RooFit::Layout(0.62,0.98,0.9));
     TAttText *text_data = plot_data->getAttText();
@@ -1179,8 +1214,10 @@ TString	ZFit_class::GetEnergyVarName(TString invMass_name){
   else if(invMass_var=="invMass_regrCorr_fra") energyBranchName = "energyEle_regrCorr_fra";
   else if(invMass_var=="invMass_regrCorr_egamma") energyBranchName = "energyEle_regrCorr_egamma";
   else if(invMass_var=="invMass_rawSC") energyBranchName = "rawEnergySCEle";
+  else if(invMass_var=="invMass_rawSC_esSC") energyBranchName = "rawEnergySCEle+esEnergySCEle";
   else if(invMass_var=="invMass_SC") energyBranchName = "energySCEle";
   else if(invMass_var=="invMass_SC_corr") energyBranchName = "energySCEle_corr";
+  else if(invMass_var=="invMass_SC_must") energyBranchName = "energySCEle_must";
   else if(invMass_var=="invMass_SC_regrCorrSemiParV4_ele") energyBranchName = "energySCEle_regrCorrSemiParV4_ele";
   else if(invMass_var=="invMass_SC_regrCorrSemiParV4_pho") energyBranchName = "energySCEle_regrCorrSemiParV4_pho";
   else if(invMass_var=="invMass_SC_regrCorrSemiParV5_ele") energyBranchName = "energySCEle_regrCorrSemiParV5_ele";

@@ -9,10 +9,9 @@ FLOATTAILSTEXT="Fixed Tail"
 runRangesFile=data/runRanges/monitoring.dat 
 baseDir=test
 xVar=runNumber
-pdateOnly="--updateOnly"
+updateOnly="--updateOnly"
 GITTAG="lcorpe:topic-quickrereco-lcsh-fix-rebase" #should eventually get this automatically from file or option
 GLOBALTAG="74X-lcdataRun2-lcPrompt-lcv0" #should eventually get this automatically from file or option
-REF=ref_231015
 imgFormat="eps"
 
 # VALIDATION=y
@@ -173,7 +172,18 @@ if [ ! -e "${outDirData}/img" ];then mkdir ${outDirData}/img -p; fi
 if [ ! -e "${outDirData}/log" ];then mkdir ${outDirData}/log -p; fi
 
 #if [ -z "$FLOATTAILSOPT" ] ;then cp $REF/MC/DYJets_madgraph-RunIISpring15DR74-Asym25ns-allRange/pufile_tot/$selection/${invMass_var}/fitres/* ${outDirData}/fitres/. || exit 1 fi
- cp $REF/MC/DYJets_madgraph-RunIISpring15DR74-Asym25ns-allRange/pufile_tot/$selection/${invMass_var}/fitres/* ${outDirData}/fitres/. 
+if [[ -n "$REF" ]] && [[ -z "$FLOATTAILSOPT" ]]; then
+refDir=$REF/dato/$REF/${selection}/${invMass_var}
+count=`ls -l $refDir/fitres | wc -l`
+echo $count
+if (( $count == 0 )); then
+ ls -A $refDir/fitres
+echo "[ERROR] specified Ref does not have anything in $refDir/fitres! exit!"
+exit 1
+fi
+outDirMC=${refDir}
+fi
+# cp $REF/MC/DYJets_madgraph-RunIISpring15DR74-Asym25ns-allRange/pufile_tot/$selection/${invMass_var}/fitres/* ${outDirMC}/fitres/. 
 if [ -n "$DRYRUN" ]; then exit 0; fi
 
 # keep track of the MC used to take the tail parameter for data
@@ -332,9 +342,10 @@ mkdir -p $WEBDIR/stability
     cp validation-${invMass_var}-slides.pdf  $baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf
 		cp $baseDir/slides/validation-${invMass_var}-slides-$rerecoTag.pdf $WEBDIR/slides/.
     
-		mkdir $WEBDIR/validation-fits/
-		cp  ${outDirData}/img/*{png,pdf} $WEBDIR/validation-fits/.
-		cp ~lcorpe/public/index.php $WEBDIR/validation-fits/.
+		mkdir -p $WEBDIR/$selection/validation-fits/
+		echo "[ INFO ] making $WEBDIR/$selection/validation-fits/ " 
+		cp  ${outDirData}/img/*{png,pdf} $WEBDIR/$selection/validation-fits/.
+		cp ~lcorpe/public/index.php $WEBDIR/$selection/validation-fits/.
 
 		cp ${outDirTable}/monitoring_summary-${invMass_var}-${selection}.tex $WEBDIR/slides/.
 
