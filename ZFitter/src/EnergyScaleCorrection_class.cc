@@ -78,9 +78,13 @@ float EnergyScaleCorrection_class::getScaleOffset(int runNumber, bool isEBEle, d
       scales_not_defined[category]=corr;
     }
     corr_itr = scales_not_defined.find(category);
-    std::cout << "[ERROR] Category not found: " << std::endl;
-    std::cout << category << std::endl;
-    //     exit(1);
+    if(R9Ele>0 || fabs(etaSCEle)>3){
+		std::cout << "[ERROR] Category not found: " << std::endl;
+		std::cout << category << std::endl;
+	}
+#ifdef DEBUG 
+	exit(1);
+#endif
   }
 
 #ifdef DEBUG
@@ -90,7 +94,6 @@ float EnergyScaleCorrection_class::getScaleOffset(int runNumber, bool isEBEle, d
     	    << "        given for category " <<  corr_itr->first << std::endl;;
 #endif
 
-  std::cout<<"correction is "<<corr_itr->second.scale;
   return corr_itr->second.scale;
 
 }
@@ -169,16 +172,17 @@ TTree *EnergyScaleCorrection_class::GetCorrTree(TChain *tree, bool fastLoop,
 
   Int_t nPV_;
   Int_t runNumber_;
-  Float_t etaEle_[2];
-  Float_t etaSCEle_[2];
-  Float_t R9Ele_[2];
-  Float_t energySCEle_[2];
+  Float_t etaEle_[3];
+  Float_t etaSCEle_[3];
+  Float_t R9Ele_[3];
+  Float_t energySCEle_[3];
 
-  Float_t scaleEle_[2];
+  Float_t scaleEle_[3];
 
   TTree *newTree = new TTree("scaleEle",""); //+correctionType,correctionType);
-  newTree->Branch("scaleEle", scaleEle_, "scaleEle[2]/F");
+  newTree->Branch("scaleEle", scaleEle_, "scaleEle[3]/F");
 
+    tree->SetBranchStatus(runNumberBranchName,1);
   if(fastLoop){
     tree->SetBranchStatus("*",0);
     tree->SetBranchStatus(runNumberBranchName,1);
