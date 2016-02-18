@@ -877,6 +877,7 @@ else:
     process.zNtupleDumper.eleID_medium = cms.string("cutBasedElectronID-Spring15-25ns-V1-standalone-medium")
     process.zNtupleDumper.eleID_tight = cms.string("cutBasedElectronID-Spring15-25ns-V1-standalone-tight")
     process.zNtupleDumper.userIDs = cms.InputTag("eleSelectionProducers", "medium25nsRun2Boff")
+    process.zNtupleDumper.userIDs = cms.InputTag("eleSelectionProducers", "diphoton25nsRun2Boff")
 
 if(options.type=="ALCARERECO"):
     recalibElectronSrc = cms.InputTag("electronRecalibSCAssociator") #now done by EcalRecal(process)

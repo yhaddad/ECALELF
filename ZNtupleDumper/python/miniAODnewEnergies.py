@@ -22,6 +22,8 @@ electron_energy_modifications = cms.VPSet(
             medium50nsRun2       = cms.InputTag("eleSelectionProducers", "medium50nsRun2"),
             tight50nsRun2       = cms.InputTag("eleSelectionProducers", "tight50nsRun2"),
             medium25nsRun2Boff = cms.InputTag("eleSelectionProducers", "medium25nsRun2Boff"),
+            diphoton25nsRun2Boff = cms.InputTag("eleSelectionProducers", "diphoton25nsRun2Boff"),
+            diphotonIso25nsRun2Boff = cms.InputTag("eleSelectionProducers", "diphotonIso25nsRun2Boff"),
             ),
               photon_config   = cms.PSet( )
               )

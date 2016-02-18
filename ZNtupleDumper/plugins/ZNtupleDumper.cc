@@ -1454,8 +1454,8 @@ void ZNtupleDumper::TreeSetSingleElectronVar(const pat::Electron& electron1, int
 		if(electron1.isElectronIDAvailable(it->first)) { //
 			if ((bool) electron1.electronID(it->first))  eleID[index] |= it->second;//
 		}//
-		if(it->first == "medium25nsRun2Boff" && ((bool) electron1.userFloat(it->first))){
-			eleID[index] |= it->second;
+		if(it->first == "medium25nsRun2Boff" || it->first == "diphoton25nsRun2Boff" || it->first == "diphotonIso25nsRun2Boff"){
+			if(((bool) electron1.userFloat(it->first))) eleID[index] |= it->second;
 		}
 	}
 

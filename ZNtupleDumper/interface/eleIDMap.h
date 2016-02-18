@@ -28,6 +28,8 @@ class eleIDMap {
 
 	// 0T ids
 	eleIDmap["medium25nsRun2Boff"] = 0x2000;
+	eleIDmap["diphoton25nsRun2Boff"] = 0x4000;
+	eleIDmap["diphotonIso25nsRun2Boff"] = 0x8000;
 
 	//official eleIDs
 	eleIDmap["cutBasedElectronID-Spring15-25ns-V1-standalone-veto"]   = 0x10000;

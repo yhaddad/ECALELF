@@ -138,7 +138,7 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
  public: // interface  
 
 	
-	enum Version_t { NONE=0, fiducial, WP80PU, WP90PU, WP70PU, loose, medium, tight, loose25nsRun2, medium25nsRun2, tight25nsRun2, loose50nsRun2, medium50nsRun2, tight50nsRun2, medium25nsRun2Boff};
+	enum Version_t { NONE=0, fiducial, WP80PU, WP90PU, WP70PU, loose, medium, tight, loose25nsRun2, medium25nsRun2, tight25nsRun2, loose50nsRun2, medium50nsRun2, tight50nsRun2, medium25nsRun2Boff, diphoton25nsRun2Boff, diphotonIso25nsRun2Boff};
   
   //  SimpleCutBasedElectronIDSelectionFunctor(): {}
 
@@ -232,6 +232,8 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
       else if (versionStr.CompareTo("medium50nsRun2")==0) version=medium50nsRun2;
       else if (versionStr.CompareTo("tight50nsRun2")==0) version=tight50nsRun2;
       else if (versionStr.CompareTo("medium25nsRun2Boff")==0) version=medium25nsRun2Boff;
+	  else if (versionStr.CompareTo("diphoton25nsRun2Boff")==0) version=diphoton25nsRun2Boff;
+	  else if (versionStr.CompareTo("diphotonIso25nsRun2Boff")==0) version=diphotonIso25nsRun2Boff;
       else {
 	std::cerr << "[ERROR] version type not defined" << std::endl;
 	std::cerr << "[ERROR] using WP80PU" << std::endl;
@@ -428,20 +430,21 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
       set("dphi_EB",       0.0336);        set("dphi_EE",         0.114);
       set("sihih_EB",      0.0101);        set("sihih_EE",        0.0283);
       //      set("ooemoop_EB",    0.0174,false);  set("ooemoop_EE",      0.0898,false);  
-      set("ooemoop_EB",    100.,false);    set("ooemoop_EE",      100.,false);  
+      set("ooemoop_EB",    10000.,false);    set("ooemoop_EE",      10000.,false);  
       set("d0vtx_EB",      0.0118 );       set("d0vtx_EE",        0.0739);
       set("dzvtx_EB",      0.373);         set("dzvtx_EE",        0.602);
-      set("pfIso_EB",      0.0766);        set("pfIso_EE",        0.0678);         
-      set("pfIsoLowPt_EB", 0.0766);        set("pfIsoLowPt_EE",   0.0678);         
-      set("relTrackIso_EB", 100.,false);   set("relTrackIso_EE", 100.,false);  
-      set("relEcalIso_EB",  100.,false);   set("relEcalIso_EE",  100.,false);
-      set("relHcalIso_EB",  100.,false);   set("relHcalIso_EE",  100.,false);
+      set("relTrackIso_EB", 1000000.,false);   set("relTrackIso_EE", 1000000.,false);  
+      set("relEcalIso_EB",  1000000.,false);   set("relEcalIso_EE",  1000000.,false);
+      set("relHcalIso_EB",  1000000.,false);   set("relHcalIso_EE",  1000000.,false);
 
 	  if(version_ == medium25nsRun2Boff){
-		  set("pfIso_EB",      100, false);        set("pfIso_EE",      100, false);
-		  set("pfIsoLowPt_EB", 100, false);        set("pfIsoLowPt_EE", 100, false);
+		  set("pfIso_EB",      1000000., false);        set("pfIso_EE",      1000000., false);
+		  set("pfIsoLowPt_EB", 1000000., false);        set("pfIsoLowPt_EE", 1000000., false);
+	  }else{
+		  set("pfIso_EB",      0.0766);        set("pfIso_EE",        0.0678);         
+		  set("pfIsoLowPt_EB", 0.0766);        set("pfIsoLowPt_EE",   0.0678);         
 	  }
-		  
+	  
     }
     else if (version_ == tight25nsRun2) {  //SPRING15. See https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
       //set("fiducial");
@@ -515,6 +518,29 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
       set("relEcalIso_EB",  100.,false);   set("relEcalIso_EE",  100.,false);
       set("relHcalIso_EB",  100.,false);   set("relHcalIso_EE",  100.,false);
     }
+    else if (version_ == diphoton25nsRun2Boff || version_ == diphotonIso25nsRun2Boff) { 
+      //set("fiducial");
+      set("maxNumberOfExpectedMissingHits_EB", 1);  set("maxNumberOfExpectedMissingHits_EE", 1);
+      set("hasMatchedConversion");
+      set("hoe_EB",        0.1);        set("hoe_EE",          0.1);
+      set("deta_EB",       0.01);       set("deta_EE",         0.01);
+      set("dphi_EB",       0.01);        set("dphi_EE",         0.01);
+      set("sihih_EB",      0.0105);        set("sihih_EE",        0.028);
+	  set("siphiiphi_EB",      0.0105);        set("siphiiphi_EE",        0.028);
+      //      set("ooemoop_EB",    0.0116,false);  set("ooemoop_EE",      0.0544,false);  
+      set("ooemoop_EB",    1000000.,false);    set("ooemoop_EE",      1000000.,false);  
+      set("d0vtx_EB",      0.0103, false);        set("d0vtx_EE",        0.0377, false);
+      set("dzvtx_EB",      0.170,false );         set("dzvtx_EE",        0.571, false);
+      set("pfIso_EB",      1000000., false);        set("pfIso_EE",        1000000., false);         
+      set("pfIsoLowPt_EB", 1000000., false);        set("pfIsoLowPt_EE",   1000000., false);         
+      set("relTrackIso_EB", 1000000.,false);   set("relTrackIso_EE", 1000000.,false);  
+	  if(version_ == diphotonIso25nsRun2Boff) {
+		  set("relEcalIso_EB",  0.25);   set("relEcalIso_EE",  0.25);
+	  } else {
+		  set("relEcalIso_EB",  1000000.,false);   set("relEcalIso_EE",  1000000.,false);
+	  }
+      set("relHcalIso_EB",  1000000.,false);   set("relHcalIso_EE",  1000000.,false);
+    }
 
   }
 
@@ -527,7 +553,7 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
 		  Double_t trackIso_EE, Double_t ecalIso_EE, Double_t hcalIso_EE,
 		  Double_t sihih_EE, Double_t  dphi_EE, Double_t deta_EE, Double_t hoe_EE,
 		  Double_t cIso_EE, Int_t conversionRejection, 
-		  Int_t maxNumberOfExpectedMissingHits_EB, Int_t maxNumberOfExpectedMissingHits_EE)
+				  Int_t maxNumberOfExpectedMissingHits_EB, Int_t maxNumberOfExpectedMissingHits_EE)
   {
     version_ = NONE;
     push_back("trackIso_EB");  push_back("trackIso_EE");
@@ -588,7 +614,7 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
     //    ret.set(false);
     // effective areas
     float AeffTk_EB = 0;
-    float AeffECAL_EB = 0.096;
+    //float AeffECAL_EB = 0.096;
     float AeffHCAL_EB = 0.020;
     float AeffTk_EE = 0;
     float AeffECAL_EE = 0.044;
@@ -730,11 +756,13 @@ class SimpleCutBasedElectronIDSelectionFunctor : public Selector<electronRef_t> 
       if ( pfMVA       >  cut("pfmva_EB",    double()) || ignoreCut("pfmva_EB")   ) passCut(retInternal_, "pfmva_EB");
 
       if ( trackIso - AeffTk_EB   *rhoRel <  cut("relTrackIso_EB", double()) || ignoreCut("relTrackIso_EB")) 
-	passCut(retInternal_, "relTrackIso_EB");
-      if ( ecalIso  - AeffECAL_EB *rhoRel <  cut("relEcalIso_EB",  double()) || ignoreCut("relEcalIso_EB") ) 
-	passCut(retInternal_, "relEcalIso_EB");
+		  passCut(retInternal_, "relTrackIso_EB");
+      /* if ( ecalIso  - AeffECAL_EB *rhoRel <  cut("relEcalIso_EB",  double()) || ignoreCut("relEcalIso_EB") )  */
+	  /* 	  passCut(retInternal_, "relEcalIso_EB"); */
+      if ( ecalIso   <  cut("relEcalIso_EB",  double()) || ignoreCut("relEcalIso_EB") )
+	  	  passCut(retInternal_, "relEcalIso_EB");
       if ( hcalIso  - AeffHCAL_EB *rhoRel <  cut("relHcalIso_EB",  double()) || ignoreCut("relHcalIso_EB") ) 
-	passCut(retInternal_, "relHcalIso_EB");
+		  passCut(retInternal_, "relHcalIso_EB");
       if(pt>=20){
 	if( ignoreCut("pfIso_EB") || iso < cut("pfIso_EB", double()))
 	  passCut(retInternal_, "pfIso_EB");
