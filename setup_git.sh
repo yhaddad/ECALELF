@@ -19,6 +19,9 @@ checkVERSION(){
 	CMSSW_7_6_3)
 	    echo "[INFO] Installing for $CMSSW_VERSION (2015 13TeV)"
 	    ;;
+	CMSSW_8_0_3)
+	    echo "[INFO] Installing for $CMSSW_VERSION (2016 13TeV)"
+	    ;;
 	*)
 	    echo "[ERROR] Sorry, $CMSSW_VERSION not configured for ECALELF"
 	    echo "        Be sure that you don't want 5_3_14_patch2 or CMSSW_7_2_*"
@@ -36,6 +39,8 @@ case $# in
 	scram project CMSSW ${CMSSW_VERSION} || exit 1
 	cd ${CMSSW_VERSION}/src
 	eval `scramv1 runtime -sh`
+	#cmsrel ${CMSSW_VERSION}
+	cd ${CMSSW_VERSION}/src
 	;;
     *)
 	checkVERSION
@@ -51,7 +56,7 @@ cd $CMSSW_BASE/src
 #########################################################################################
 echo "[STATUS] Download of the skims"
 # last WSkim version
-git cms-init
+git cms-init 
 
 #########################################################################################
 echo "[STATUS] Download ECALELF directory"
@@ -155,42 +160,44 @@ case $CMSSW_VERSION in
 	patch  -p0 < $myDir/ALCARAW_RECO/test/clusterLazyTools.patch >> setup.log || exit 1
     fi
     #patch  -p0 < $myDir/ALCARAW_RECO/test/class_def.xml.patch >> setup.log || exit 1
-
-	cp /afs/cern.ch/user/b/bendavid/cmspublic/regweights52xV3/*.root $myDir/EleNewEnergiesProducer/data/ >> setup.log || exit 1
-
-	# for pdfSystematics
-	scram setup lhapdffull
-	eval `scramv1 runtime -sh`
-	git-cms-addpkg ElectroWeakAnalysis/Utilities
-	scram b -j16
-
+    
+    cp /afs/cern.ch/user/b/bendavid/cmspublic/regweights52xV3/*.root $myDir/EleNewEnergiesProducer/data/ >> setup.log || exit 1
+    
+    # for pdfSystematics
+    scram setup lhapdffull
+    eval `scramv1 runtime -sh`
+    git-cms-addpkg ElectroWeakAnalysis/Utilities
+    scram b -j16
+    
+    ;;
+    
+    CMSSW_7_4_*)
+	#		git cms-addpkg DataFormats/EgammaCandidates/ || exit 1
+	#		git apply Calibration/EcalAlCaRecoProducers/test/full5x5.patch || exit 1
+	git-cms-merge-topic shervin86:regression || exit 1
+	#		git cms-addpkg  Configuration/DataProcessing/ || exit 1
+	#		git apply Calibration/EcalAlCaRecoProducers/test/RecoTLR.patch || exit 1
 	;;
-	
-	CMSSW_7_4_*)
-#		git cms-addpkg DataFormats/EgammaCandidates/ || exit 1
-#		git apply Calibration/EcalAlCaRecoProducers/test/full5x5.patch || exit 1
-		git-cms-merge-topic shervin86:regression || exit 1
-#		git cms-addpkg  Configuration/DataProcessing/ || exit 1
-#		git apply Calibration/EcalAlCaRecoProducers/test/RecoTLR.patch || exit 1
-		;;
-
+    
     CMSSW_7_5_*)
 	echo "downloading changes to alcareco streams needed to use cmsDriver.py"
 	git cms-addpkg Configuration/EventContent
 	git cms-addpkg Configuration/StandardSequences
 	git cms-merge-topic -u ldcorpe:topic-ecalelf-alcareco-streams
 	;;
-	CMSSW_7_6_*)
-		git-cms-merge-topic shervin86:76X || exit 1
-		;;
-
+    CMSSW_7_6_*)
+	git-cms-merge-topic shervin86:76X || exit 1
+	;;
+    CMSSW_8_0_*)
+	git cms-merge-topic --unsafe yhaddad:80x || exit 1
+	;;
 
 esac
 
 
 
 # compile
-scram b -j16
+scram b -j 16
 
 # for file in `find -name '*.url'`; 
 #   do 
