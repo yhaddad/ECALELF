@@ -189,6 +189,7 @@ case $CMSSW_VERSION in
 	git-cms-merge-topic shervin86:76X || exit 1
 	;;
     CMSSW_8_0_*)
+	git cms-addpkg RecoEcal/EgammaClusterProducers
 	git cms-merge-topic --unsafe yhaddad:80x || exit 1
 	;;
 
