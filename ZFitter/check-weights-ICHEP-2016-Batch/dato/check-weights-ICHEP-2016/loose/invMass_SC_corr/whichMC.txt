@@ -1,0 +1,1 @@
+check-weights-ICHEP-2016-Batch//MC/DYToEE_NNPDF30-powheg-pythia8-allRange/pu_data_check-weights-ICHEP-2016/loose/invMass_SC_corr

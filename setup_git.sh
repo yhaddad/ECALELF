@@ -84,8 +84,8 @@ cd $CMSSW_BASE/src
 # - Last stable pattuple code:
 case $CMSSW_VERSION in
     CMSSW_5_*)
-		git-cms-addpkg DataFormats/EgammaCandidates  #>> setup.log || exit 1
-
+	git-cms-addpkg DataFormats/EgammaCandidates  #>> setup.log || exit 1
+	
 		echo "[STATUS] Patch GsfElectrons for ECALELF rereco"
 		sed -i 's|[/]*assert|////assert|' DataFormats/EgammaCandidates/src/GsfElectron.cc 
 

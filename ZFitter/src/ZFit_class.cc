@@ -126,7 +126,7 @@ void ZFit_class::Import(TString commonCut, TString eleID_, std::set<TString>& br
 	if(_oddData) dataCut = cutter.GetCut(commonCut + "-odd", false);
 	else dataCut = cutter.GetCut(commonCut, false);
 #ifdef DEBUG
-	std::cout << "MC CUT: " << mcCut << std::endl;
+	std::cout << "MC CUT:   " << mcCut << std::endl;
 	std::cout << "DATA CUT: " << dataCut << std::endl;
 #endif
 	std::cout << "------------------------------ IMPORT DATASETS" << std::endl;
@@ -213,7 +213,7 @@ RooDataHist *ZFit_class::ImportHist(TH1F *hist)
 	//  _isBinned=true;
 
 	RooDataHist *data_hist = new RooDataHist(invMass.GetName(), invMass.GetTitle(),
-	        RooArgSet(invMass), hist);
+						 RooArgSet(invMass), hist);
 
 	return data_hist;
 }
