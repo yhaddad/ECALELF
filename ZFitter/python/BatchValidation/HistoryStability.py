@@ -2,8 +2,6 @@ import os
 import subprocess
 import stat
 from os import popen
-import sched,time
-from time import gmtime,strftime
 
 def createSplitRunRangeFiles(path = 'data/runRanges/',runRangesFile = ''):
 
@@ -37,8 +35,8 @@ def createSplitRunRangeFiles(path = 'data/runRanges/',runRangesFile = ''):
 
 def createSplitRunScripts(splitFiles = [],configPath='data/validation/',
                           configFile = '',invMass = 'invMass_SC_corr',baseDir='',
-                          outDirMC = '', outDirData = '',commonCut='Et_25',
-                          regionsFile = 'data/regions/stability.dat',extraOptions='',selection=''):
+                          outDirMC = '', outDirData = '',commonCut='Et_25',regionsPath='data/regions/',
+                          regionsFile = 'stability.dat',extraOptions='',selection=''):
 
     assert (configFile != ''),'validation file name is empty'
     assert (len(splitFiles) != 0),'SplitFiles is empty'
@@ -64,15 +62,13 @@ def createSplitRunScripts(splitFiles = [],configPath='data/validation/',
         scriptContent += './script/stability_split.sh'
         scriptContent += ' -f '+configPath+configFile
         scriptContent += ' --runRangesFile '+file
-        scriptContent += ' --regionsFile '+regionsFile
+        scriptContent += ' --regionsFile '+regionsPath+regionsFile
         scriptContent += ' --invMass_var '+invMass
         scriptContent += ' --baseDir '+baseDir
         scriptContent += ' --selection '+selection
         scriptContent += ' --stability'
         if extraOptions != '':
             scriptContent += ' ' + extraOptions
-        #logname = scriptName.split('/')[-1].replace('.sh','.log')
-        #scriptContent += ' > '+outDirData+'/log/'+logname
         scriptContent += '\n'
 
         #Write to the script file...
@@ -184,11 +180,11 @@ def submitSplitRunScripts(jobNames = [],splitScripts = [],queue='1nh',dryRun=Fal
     return jobs
 
 
-def makeTable(runRangesDir = 'data/runRanges/',runRangesFile='',commonCut='Et_25',outDirMC='',outDirData='',invMass = '',selection='',regionsFile='',extraOptions=''):
+def makeTable(runRangesDir = 'data/runRanges/',runRangesFile='',commonCut='Et_25',outDirMC='',outDirData='',invMass = '',selection='',regionsPath='data/regions/',regionsFile='stability',extraOptions=''):
 
     command = ''
     command += './script/makeTable.sh'
-    command += ' --regionsFile ' + regionsFile
+    command += ' --regionsFile ' + regionsPath+regionsFile
     command += ' --runRangesFile ' + runRangesDir + runRangesFile
     command += ' --commonCut ' + commonCut
     command += ' --outDirFitResMC ' + outDirMC + '/fitres'
@@ -205,36 +201,7 @@ def makeTable(runRangesDir = 'data/runRanges/',runRangesFile='',commonCut='Et_25
 
     return 'monitoring_stability-'+invMass+'-'+selection+'.tex'
 
-
-def fitresFileNamesFromScriptName(scriptName = '',commonCut = 'Et_25',regionsFile='data/regions/stability.dat'):
-
-    assert scriptName != '', 'Script name must not be empty'
-    
-    runMin = scriptName.split('/')[-1].split('_')[0]
-    runMax = scriptName.split('/')[-1].split('_')[1]
-    regions = getRegions(regionsFile)
-    types = ['.tex','.root','.txt']
-
-    fileNames = []
-    for region in regions:
-        for type in types:
-            name = region+'-runNumber_'+runMin+'_'+runMax+'-'+commonCut+type
-            fileNames.append(name)
-
-    return fileNames
-
-
-def getRegions(regionsFile='data/regions/stability.dat'):
-    
-    regions = []
-    with open(regionsFile) as f:
-        for line in f.read().split('\n'):
-            if '#' not in line and line != '':
-                regions.append(line)
-    return regions
-  
-
-def monitorJobs(jobNames=[],splitScripts=[],outDirMC='',outDirData='',verbose=False,dryRun=True,regionsFile=''):
+def monitorJobs(jobNames=[],splitScripts=[],outDirMC='',outDirData='',verbose=False,dryRun=True,regionsPath='data/regions/',regionsFile='stability'):
 
     assert (len(jobNames) > 0 and len(splitScripts) > 0), 'Both job names array and scripts array must not be empty'
     assert (len(jobNames) == len(splitScripts)), 'Jobs names array length must equal scripts array length'
@@ -308,98 +275,29 @@ def monitorJobs(jobNames=[],splitScripts=[],outDirMC='',outDirData='',verbose=Fa
     else:
         return False
 
-def createValidationScript(splitFiles = [],configPath='data/validation/',
-                           configFile = '',invMass = 'invMass_SC_corr',baseDir='',
-                           updateOnly = '--updateOnly', outDirMC = '', outDirData = '',commonCut='Et_25',
-                           regionsFile = 'data/regions/validation.dat'):
+def fitresFileNamesFromScriptName(scriptName = '',commonCut = 'Et_25',regionsPath='data/regions/',regionsFile='stability.dat'):
 
-    #Write the script
-    scriptContent = ''
-    scriptContent += 'cd ' + os.getcwd().split('Calibration')[0] + '\n'
-    scriptContent += 'eval $(scram runtime -sh)\n'
-    scriptContent += 'cd Calibration/ZFitter/\n'
-    scriptContent += '\n'
+    assert scriptName != '', 'Script name must not be empty'
+    
+    runMin = scriptName.split('/')[-1].split('_')[0]
+    runMax = scriptName.split('/')[-1].split('_')[1]
+    regions = getRegions(regionsFile=regionsFile)
+    types = ['.tex','.root','.txt']
 
-    #stability_split.sh part...
-    scriptContent += './script/validation_split.sh'
-    scriptContent += ' -f '+configPath+configFile
-    scriptContent += ' --runRangesFile '+file
-    scriptContent += ' --invMass_var '+invMass
-    scriptContent += ' --baseDir '+baseDir
-    scriptContent += ' --stability'
-    logname = scriptName.split('/')[-1].replace('.sh','.log')
-    scriptContent += ' > '+outDirData+'/log/'+logname
-    scriptContent += '\n'
+    fileNames = []
+    for region in regions:
+        for type in types:
+            name = region+'-runNumber_'+runMin+'_'+runMax+'-'+commonCut+type
+            fileNames.append(name)
 
-    #Write to the script file...
-    splitFile = open(scriptName,'w')
-    splitFile.write(scriptContent)
-    splitFile.close()
+    return fileNames
 
-
-
-
-
-
-queue = 'cmscaf1nh'
-#regionsFile='data/regions/stability.dat'
-regionsFile='data/regions/systematics_LC.dat'
-configFile = 'check-pulse-ICHEP-2016.dat'
-#configFile = 'ICHEP.dat'
-selection = 'loose25nsRun2'
-#invMasses = ['invMass_fulle5x5','invMass_e5x5']
-invMasses = ['invMass_SC_must_regrCorr_ele']
-#invMasses = ['invMass_SC_pho_regrCorr']
-#invMasses = ['invMass_fulle5x5']
-#invMasses = ['invMass_e5x5']
-#invMasses = ['invMass_SC_corr']
-
-dryRun = False
-monitoringMode = True
-
-runRangesFile = configFile.split('.')[0]+'_interval_100000.dat'
-baseDir = configFile.split('.')[0]+'-Batch/'
-
-for invMass in invMasses:
-
-    #Making the split runrange files in tmp
-    splitFiles = createSplitRunRangeFiles(runRangesFile=runRangesFile)
-
-    #Creating the output directories
-    outDirData,outDirMC = createOutputDirectories(baseDir=baseDir,configFile=configFile,
-                                selection=selection,invMass=invMass)
-
-    #Creating the job scripts
-    splitScripts = createSplitRunScripts(splitFiles=splitFiles,configFile=configFile,
-                                        baseDir=baseDir,outDirMC=outDirMC,invMass=invMass,
-                                        outDirData=outDirData,regionsFile=regionsFile,
-                                        extraOptions='',selection=selection)
-                                        
-    #Submitting the jobs
-    if not monitoringMode:
-        jobNames = submitSplitRunScripts(splitScripts=splitScripts,queue=queue,dryRun=dryRun)
-    else:
-        jobNames = submitSplitRunScripts(splitScripts=splitScripts,queue=queue,dryRun=True)
-
-    #Monitor the jobs and submit when they fail
-    checkPeriod = 300.0
-    starttime = time.time()
-    if monitoringMode:
-        complete = monitorJobs(jobNames,splitScripts,outDirMC,outDirData,verbose=True,dryRun=dryRun,regionsFile=regionsFile)
-    else:
-        complete = False
-    while not complete:
-        time.sleep(checkPeriod - ((time.time() - starttime) % checkPeriod))
-        print 'Checking jobs at ', strftime("%H:%M:%S", gmtime())
-        complete = monitorJobs(jobNames,splitScripts,outDirMC,outDirData,verbose=True,dryRun=dryRun,regionsFile=regionsFile)
-
-    #Make the stability .tex table
-    if complete:
-        print "Jobs are all done! Time to make the table..."
-        tableName = makeTable(runRangesFile=runRangesFile,outDirMC=outDirMC,outDirData=outDirData,invMass=invMass,selection=selection,regionsFile=regionsFile,extraOptions='')
-        
-
-
-
-
-
+def getRegions(regionsPath='data/regions/',regionsFile='stability.dat'):
+    
+    regions = []
+    with open(regionsPath+regionsFile) as f:
+        for line in f.read().split('\n'):
+            if '#' not in line and line != '':
+                regions.append(line)
+    return regions
+ 
