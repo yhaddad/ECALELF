@@ -18,7 +18,7 @@ echo
 echo "--------------------------------------"
 echo `parseDatasetFile.sh alcareco_datasets.dat | grep $(echo $json | cut -f1 -d-) | grep $(echo $json | cut -f2 -d-)-$(echo $json | cut -f3 -d-)`
 echo " ======= "
-./scripts/prodNtuples.sh `parseDatasetFile.sh alcareco_datasets.dat | grep $(echo $json | cut -f1 -d-) | grep $(echo $json | cut -f2 -d-)-$(echo $json | cut -f3 -d-)` \
+./scripts/prodNtuplesCrab3.sh `parseDatasetFile.sh alcareco_datasets.dat | grep $(echo $json | cut -f1 -d-) | grep $(echo $json | cut -f2 -d-)-$(echo $json | cut -f3 -d-)` \
 			 --type MINIAOD -t ${tag} \
 			 --scheduler=${where} \
 			 --json=${name} \

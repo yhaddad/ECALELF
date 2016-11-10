@@ -160,12 +160,13 @@ def submitSplitRunScripts(jobNames = [],splitScripts = [],queue='1nh',dryRun=Fal
         #Build command
         command = ''
         command += 'bsub'
-        command += ' -R "pool>30000" -q '+queue
+        command += ' -R "pool>30000" -q '+ queue
+        command += ' -M 300000 '
         if len(jobNames) == 0:
-            command += ' -J Split'+str(i)
+            command += ' -J Split' + str(i)
         else:
-            command += ' -J '+jobNames[i]
-        command += ' < '+cwd+'/'+script
+            command += ' -J ' + jobNames[i]
+        command += ' < ' + cwd + '/' + script
 
         #Submit command
         if len(jobNames) == 0:
@@ -266,7 +267,7 @@ def monitorJobs(jobNames=[],splitScripts=[],outDirMC='',outDirData='',verbose=Fa
         print 'The following are to be resubmitted:'
         for name,script in zip(resubNames,resub):
             print name,' ',script
-        submitSplitRunScripts(jobNames= resubNames,splitScripts=resub,queue='cmscaf1nh',dryRun=dryRun)
+        submitSplitRunScripts(jobNames= resubNames,splitScripts=resub,queue='cmscaf1nd',dryRun=dryRun)
     else:
         print "No resubmissions needed :)"
 

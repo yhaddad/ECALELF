@@ -38,15 +38,25 @@
 ##----- RUN2015D Begin (25ns)
 #256630
 ##----- RUN2016B
+##------Run2016B	
+272007	
+##------Run2016C	
+275657	
+##------Run2016D	
+276315	
+##------Run2016E	
+276831	
+##------Run2016F	
+277772	
 
-220641 #PulseShape
-257615 #PulseShape
-258601 #PulseShape
-271983 #PulseShape
-272023 #Era RUN2016Bv1
-272818 #PulseShape
-273150 #Era RUN2016Bv2
-274080 #PulseShape
-274958 #PulseShape
-275420 #Era RUN2016C 275757 #PulseShape
-276315 #PulseShape and Era RUN2016D
+#220641 #PulseShape
+#257615 #PulseShape
+#258601 #PulseShape
+#271983 #PulseShape
+#272023 #Era RUN2016Bv1
+#272818 #PulseShape
+#273150 #Era RUN2016Bv2
+#274080 #PulseShape
+#274958 #PulseShape
+#275420 #Era RUN2016C 275757 #PulseShape
+#276315 #PulseShape and Era RUN2016D

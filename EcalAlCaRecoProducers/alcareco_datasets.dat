@@ -252,3 +252,4 @@ allRange	/DYToEE_NNPDF30_13TeV-powheg-pythia8/RunIISpring16MiniAODv1-PUSpring16_
 277981-278808	 /DoubleEG/Run2016F-PromptReco-v1/MINIAOD       DoubleEG-Run2016F-noSkim-Prompt_v1-miniAOD  caf database VALID RUN2016F
 278820-279588	 /DoubleEG/Run2016G-PromptReco-v1/MINIAOD       DoubleEG-Run2016G-noSkim-Prompt_v1-miniAOD  caf database VALID RUN2016G
 279653-280385	 /DoubleEG/Run2016G-PromptReco-v1/MINIAOD       DoubleEG-Run2016G-noSkim-Prompt_v1-miniAOD  caf database VALID RUN2016G
+281613-282037	 /DoubleEG/Run2016H-PromptReco-v2/MINIAOD       DoubleEG-Run2016H-noSkim-Prompt_v2-miniAOD  caf database VALID RUN2016H
